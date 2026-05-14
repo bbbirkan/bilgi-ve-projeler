@@ -1,0 +1,78 @@
+# SEO Working Directory
+
+This folder is an SEO content workspace powered by the SEO plugin. It contains brand context, keyword research, content briefs, and written articles.
+
+## Commands
+
+Four commands form the content pipeline. Run them in order:
+
+| Command | What it does | Needs SEO data MCP? |
+|---------|-------------|---------------------|
+| `/start-here` | Setup + workflow guide. Re-run any time for a status dashboard | No |
+| `/find-opportunities` | Discover revenue-ranked keyword opportunities | **Yes** |
+| `/create-brief` | Build a data-backed content brief from an opportunity | **Yes** |
+| `/write-content` | Write a publication-ready article from a brief | No |
+
+## File Structure
+
+```
+./
+├── CLAUDE.md                           ← You are here
+├── brand/                              Brand context (shared across all commands)
+│   ├── brand-voice.md                  Writing voice profile — tone, vocabulary, rhythm, POV
+│   ├── site-profile.md                 Domain metrics, content inventory, top keywords (7-day cache)
+│   └── competitors.md                  Competitor profiles + keyword overlap (14-day cache)
+│
+└── campaigns/
+    ├── opportunities.md                Master list of ALL discovered opportunities (append-only)
+    └── {YYYY-MM-DD}/                   Date folder — created on first output that day
+        ├── daily-opportunities.html    Opportunity report from /find-opportunities
+        ├── {slug}-brief.html           Content brief from /create-brief
+        ├── {slug}-article.md           Written article from /write-content
+        └── screenshots/               SERP screenshots (optional, from /create-brief)
+```
+
+## Key Concepts
+
+### Opportunities vs Briefs
+
+An **opportunity** is a keyword cluster with modeled revenue value, discovered by `/find-opportunities`. Opportunities live in `campaigns/opportunities.md` — one H2 section per opportunity with status, lead keyword, cluster keywords, value, and priority.
+
+A **brief** is a research document built from an opportunity by `/create-brief`. It contains everything needed to write an article: primary/long-tail/question keywords with volume, People Also Ask data, competitor analysis, recommended heading structure, word count target, semantic keywords, internal links, and writing notes. Briefs are saved as HTML reports in the date folder.
+
+### The Opportunities File
+
+`campaigns/opportunities.md` is the central tracker. It is **append-only** — opportunities are never deleted or reordered. Each entry has a status that progresses through the pipeline:
+
+- `new` — just discovered, not yet briefed
+- `briefed` — brief created (Brief path is set)
+- `written` — article written (Article path is set)
+- `skipped` — user explicitly passed on this one
+
+When looking for what to work on next, check this file for `new` opportunities (not yet briefed) or `briefed` opportunities (not yet written).
+
+### Date Folders
+
+Output files are organized by date in `campaigns/YYYY-MM-DD/`. Today's work goes in `campaigns/{today's date}/`. When referencing today's briefs or articles, use today's date folder. When looking for a specific brief or article, check the opportunity's `**Brief:**` or `**Article:**` path in `campaigns/opportunities.md` — it points to the exact file.
+
+### Brand Context
+
+The `brand/` directory contains cached context that all commands read before doing work:
+
+- **brand-voice.md** — Defines how content should sound. Every article is written in this voice. Update it any time by asking to refine the brand voice.
+- **site-profile.md** — Domain metrics, content inventory, top keywords. Auto-refreshed when data is older than 7 days.
+- **competitors.md** — Competitor URLs, positioning summaries, and keyword overlap. Auto-refreshed when older than 14 days.
+
+## Typical Workflow
+
+1. **Find opportunities** — Run `/find-opportunities` with a topic, keyword, or just your domain. Get back a ranked list of keyword opportunities with dollar values.
+2. **Pick and brief** — Run `/create-brief` with an opportunity slug or keyword. Get back a complete content brief as an HTML report.
+3. **Write** — Run `/write-content` with the brief path (or it auto-detects the top unwritten brief). Get back a publication-ready article with frontmatter and schema markup.
+4. **Repeat** — Run `/find-opportunities` again for fresh opportunities. The plugin deduplicates against everything already in `campaigns/opportunities.md`.
+
+## Notes
+
+- `/find-opportunities` and `/create-brief` require an SEO data MCP (Ahrefs, DataForSEO, or SEMrush). They will not run without one — this is intentional, not a bug.
+- `/write-content` works from the brief alone — no SEO data MCP needed.
+- Re-running any command on existing output triggers iteration detection — you'll be offered Refresh/Expand/Rebuild options instead of starting from scratch.
+- The plugin caches domain data for 7 days and competitor data for 14 days to avoid redundant API calls.

@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Brief — Marketing Dashboard Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAF6F1;
+      --surface: #FFFFFF;
+      --surface-hover: #FDF9F5;
+      --border: #E8E0D8;
+      --text: #1A1A1A;
+      --text-secondary: #6B6560;
+      --accent: #D4572A;
+      --accent-light: #FFF0EB;
+      --accent-hover: #B8461F;
+      --positive: #1D7A4E;
+      --positive-light: #EDFAF3;
+      --warning: #B8860B;
+      --warning-light: #FFF8E6;
+      --tag-bg: #F0ECE6;
+      --heading-font: 'Instrument Serif', serif;
+      --body-font: 'DM Sans', sans-serif;
+      --mono-font: 'IBM Plex Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--body-font);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      padding: 2.5rem 1.5rem;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .report-header {
+      margin-bottom: 2.5rem;
+    }
+
+    .report-label {
+      font-family: var(--body-font);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .report-title {
+      font-family: var(--heading-font);
+      font-size: 2.4rem;
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+    }
+
+    .report-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+    }
+
+    .report-meta .sep {
+      color: var(--border);
+    }
+
+    /* ── Metrics Row ── */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .metric-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      margin-bottom: 0.4rem;
+    }
+
+    .metric-value {
+      font-family: var(--mono-font);
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .metric-value.accent { color: var(--accent); }
+    .metric-value.positive { color: var(--positive); }
+
+    /* ── Sections ── */
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-heading {
+      font-family: var(--heading-font);
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-subheading {
+      font-family: var(--body-font);
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .section-subheading:first-child { margin-top: 0; }
+
+    /* ── Tables ── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .data-table thead th {
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      padding: 0.6rem 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .data-table thead th.num { text-align: right; }
+
+    .data-table tbody td {
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .data-table tbody tr:last-child td { border-bottom: none; }
+
+    .data-table .kw { font-weight: 500; }
+
+    .data-table .num {
+      text-align: right;
+      font-family: var(--mono-font);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* KD dots */
+    .kd-cell {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.4rem;
+    }
+
+    .kd-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .kd-dot.easy { background: var(--positive); }
+    .kd-dot.medium { background: var(--warning); }
+    .kd-dot.hard { background: var(--accent); }
+    .kd-dot.unknown { background: var(--border); }
+
+    /* Intent badges */
+    .intent-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+    }
+
+    .intent-badge.informational { background: #EEF2FF; color: #4338CA; }
+    .intent-badge.commercial { background: var(--warning-light); color: var(--warning); }
+    .intent-badge.transactional { background: var(--positive-light); color: var(--positive); }
+    .intent-badge.navigational { background: var(--tag-bg); color: var(--text-secondary); }
+
+    /* PAA format badges */
+    .format-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      background: var(--tag-bg);
+      color: var(--text-secondary);
+    }
+
+    /* ── Tag Cloud ── */
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.3rem 0.7rem;
+      border-radius: 5px;
+      background: var(--tag-bg);
+      color: var(--text-secondary);
+      transition: all 0.15s ease;
+    }
+
+    .tag:hover {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+
+    .tag.highlight {
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ── Insight callout ── */
+    .insight {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 10px 10px 0;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    .insight strong { color: var(--text); }
+
+    /* ── Competitor Cards (collapsible) ── */
+    .competitor-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+
+    .competitor-card summary {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+      gap: 1rem;
+      transition: background 0.15s ease;
+    }
+
+    .competitor-card summary:hover {
+      background: var(--surface-hover);
+    }
+
+    .competitor-card summary::-webkit-details-marker { display: none; }
+
+    .competitor-card[open] summary {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .comp-header-left { flex: 1; min-width: 0; }
+
+    .comp-name {
+      font-family: var(--heading-font);
+      font-size: 1.05rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .comp-url {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      word-break: break-all;
+    }
+
+    .comp-stats {
+      display: flex;
+      gap: 1rem;
+      flex-shrink: 0;
+      align-items: flex-start;
+    }
+
+    .comp-stat {
+      text-align: center;
+    }
+
+    .comp-stat-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+    }
+
+    .comp-stat-value {
+      font-family: var(--mono-font);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .comp-body {
+      padding: 1.25rem 1.5rem;
+    }
+
+    .comp-section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      margin-bottom: 0.6rem;
+      margin-top: 1.25rem;
+    }
+
+    .comp-section-label:first-child { margin-top: 0; }
+
+    /* Heading tree */
+    .heading-tree { list-style: none; }
+
+    .heading-tree li {
+      padding: 0.35rem 0 0.35rem 0;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+
+    .heading-tree .h-tag {
+      font-family: var(--mono-font);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--tag-bg);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .heading-tree .level-1 { padding-left: 0; }
+    .heading-tree .level-2 { padding-left: 1.5rem; border-left: 2px solid var(--border); margin-left: 0.5rem; }
+    .heading-tree .level-3 { padding-left: 3rem; border-left: 2px solid var(--border); margin-left: 0.5rem; }
+
+    .comp-analysis {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .comp-analysis strong { color: var(--text); }
+
+    /* ── Recommended Headings Tree ── */
+    .rec-heading-tree {
+      list-style: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .rec-heading-tree li {
+      padding: 0.5rem 0;
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      font-size: 0.92rem;
+    }
+
+    .rec-heading-tree .h-tag {
+      font-family: var(--mono-font);
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .rec-heading-tree .h-tag.h1 { background: var(--accent-light); color: var(--accent); }
+    .rec-heading-tree .h-tag.h2 { background: #EEF2FF; color: #4338CA; }
+    .rec-heading-tree .h-tag.h3 { background: var(--tag-bg); color: var(--text-secondary); }
+
+    .rec-heading-tree .level-1 { padding-left: 0; font-weight: 600; }
+    .rec-heading-tree .level-2 {
+      padding-left: 1.75rem;
+      border-left: 2px solid var(--border);
+      margin-left: 0.85rem;
+    }
+    .rec-heading-tree .level-3 {
+      padding-left: 3.5rem;
+      border-left: 2px solid var(--border);
+      margin-left: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .heading-rationale {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-top: 1rem;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    /* ── Internal linking table ── */
+    .link-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .link-table th {
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      padding: 0.6rem 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .link-table td {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .link-table tr:last-child td { border-bottom: none; }
+
+    .link-table .anchor {
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    .link-table .url-col {
+      font-family: var(--mono-font);
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      word-break: break-all;
+    }
+
+    /* ── Writing notes ── */
+    .writing-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .note-block {
+      margin-bottom: 1.25rem;
+    }
+
+    .note-block:last-child { margin-bottom: 0; }
+
+    .note-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+
+    .note-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .note-text strong { color: var(--text); }
+
+    .meta-title-preview {
+      display: inline-block;
+      background: var(--tag-bg);
+      padding: 0.35rem 0.85rem;
+      border-radius: 5px;
+      font-family: var(--mono-font);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-top: 0.35rem;
+    }
+
+    .snippet-targets {
+      list-style: none;
+      margin-top: 0.5rem;
+    }
+
+    .snippet-targets li {
+      padding: 0.3rem 0;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .snippet-targets li::before {
+      content: "\2192";
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ── Footer ── */
+    .report-footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ── Chevron for details ── */
+    .chevron {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+      transition: transform 0.2s ease;
+      color: var(--text-secondary);
+    }
+
+    details[open] .chevron { transform: rotate(90deg); }
+
+    /* ── Word count bar ── */
+    .wc-comparison {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .wc-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .wc-label {
+      font-size: 0.78rem;
+      width: 110px;
+      flex-shrink: 0;
+      text-align: right;
+      color: var(--text-secondary);
+    }
+
+    .wc-bar-track {
+      flex: 1;
+      height: 20px;
+      background: var(--tag-bg);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .wc-bar {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+
+    .wc-bar.comp { background: var(--border); }
+    .wc-bar.target { background: var(--accent); }
+    .wc-bar.outlier { background: var(--warning-light); border: 1px solid var(--warning); }
+
+    .wc-num {
+      font-family: var(--mono-font);
+      font-size: 0.78rem;
+      font-weight: 500;
+      width: 55px;
+      flex-shrink: 0;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      .metrics-row { grid-template-columns: repeat(2, 1fr); }
+      .comp-stats { flex-direction: column; gap: 0.5rem; }
+      .report-title { font-size: 1.8rem; }
+      body { padding: 1.5rem 1rem; }
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: white; padding: 1rem; }
+      .competitor-card, details { page-break-inside: avoid; }
+      details[open] summary ~ * { display: block !important; }
+      .tag:hover { background: var(--tag-bg); color: var(--text-secondary); }
+    }
+
+    /* ── Fade-in animation ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.5s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in:nth-child(1) { animation-delay: 0.05s; }
+    .fade-in:nth-child(2) { animation-delay: 0.1s; }
+    .fade-in:nth-child(3) { animation-delay: 0.15s; }
+    .fade-in:nth-child(4) { animation-delay: 0.2s; }
+    .fade-in:nth-child(5) { animation-delay: 0.25s; }
+    .fade-in:nth-child(6) { animation-delay: 0.3s; }
+    .fade-in:nth-child(7) { animation-delay: 0.35s; }
+    .fade-in:nth-child(8) { animation-delay: 0.4s; }
+    .fade-in:nth-child(9) { animation-delay: 0.45s; }
+    .fade-in:nth-child(10) { animation-delay: 0.5s; }
+    .fade-in:nth-child(11) { animation-delay: 0.55s; }
+    .fade-in:nth-child(12) { animation-delay: 0.6s; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ── Header ── -->
+    <header class="report-header fade-in">
+      <div class="report-label">Content Brief</div>
+      <h1 class="report-title">Marketing Dashboard Guide</h1>
+      <div class="report-meta">
+        <span>15 Mar 2026</span>
+        <span class="sep">&middot;</span>
+        <span>United States</span>
+        <span class="sep">&middot;</span>
+        <span>Pillar Guide</span>
+        <span class="sep">&middot;</span>
+        <span>Acme Analytics</span>
+      </div>
+    </header>
+
+    <!-- ── Overview Metrics ── -->
+    <div class="metrics-row fade-in">
+      <div class="metric-card">
+        <div class="metric-label">Word Count</div>
+        <div class="metric-value">3,800</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Lead Volume</div>
+        <div class="metric-value accent">2,400</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Avg KD</div>
+        <div class="metric-value positive">18</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Competitors</div>
+        <div class="metric-value">3</div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- KEYWORDS -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="section fade-in">
+      <h2 class="section-heading">Keywords</h2>
+
+      <div class="section-subheading">Primary Keywords</div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Keyword</th>
+            <th class="num">Volume</th>
+            <th class="num">KD</th>
+            <th>Intent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="kw">marketing dashboard</td><td class="num">2,400</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>18</span></td><td><span class="intent-badge commercial">Comm</span></td></tr>
+          <tr><td class="kw">marketing analytics dashboard</td><td class="num">720</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>14</span></td><td><span class="intent-badge informational">Info</span></td></tr>
+          <tr><td class="kw">marketing dashboard examples</td><td class="num">480</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>12</span></td><td><span class="intent-badge informational">Info</span></td></tr>
+          <tr><td class="kw">best marketing dashboard</td><td class="num">320</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>22</span></td><td><span class="intent-badge commercial">Comm</span></td></tr>
+          <tr><td class="kw">digital marketing dashboard</td><td class="num">260</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>15</span></td><td><span class="intent-badge informational">Info</span></td></tr>
+          <tr><td class="kw">marketing dashboard template</td><td class="num">210</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>20</span></td><td><span class="intent-badge transactional">Trans</span></td></tr>
+          <tr><td class="kw">marketing reporting dashboard</td><td class="num">170</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>11</span></td><td><span class="intent-badge informational">Info</span></td></tr>
+          <tr><td class="kw">free marketing dashboard</td><td class="num">140</td><td class="num"><span class="kd-cell"><span class="kd-dot medium"></span>32</span></td><td><span class="intent-badge transactional">Trans</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-subheading">Long-Tail Keywords</div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Keyword</th>
+            <th class="num">Volume</th>
+            <th class="num">KD</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="kw">marketing dashboard for small business</td><td class="num">170</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>8</span></td></tr>
+          <tr><td class="kw">how to build a marketing dashboard</td><td class="num">140</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>12</span></td></tr>
+          <tr><td class="kw">marketing dashboard KPIs</td><td class="num">110</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>15</span></td></tr>
+          <tr><td class="kw">marketing dashboard google sheets</td><td class="num">90</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>10</span></td></tr>
+          <tr><td class="kw">marketing performance dashboard</td><td class="num">90</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>18</span></td></tr>
+          <tr><td class="kw">marketing dashboard design best practices</td><td class="num">70</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>6</span></td></tr>
+          <tr><td class="kw">real time marketing dashboard</td><td class="num">50</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>14</span></td></tr>
+          <tr><td class="kw">CMO dashboard metrics</td><td class="num">50</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>22</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- QUESTIONS & PAA -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="section fade-in">
+      <h2 class="section-heading">Questions &amp; People Also Ask</h2>
+
+      <div class="section-subheading">Question Keywords</div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th class="num">Volume</th>
+            <th class="num">KD</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="kw">what is a marketing dashboard</td><td class="num">320</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>10</span></td></tr>
+          <tr><td class="kw">how to create a marketing dashboard</td><td class="num">210</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>14</span></td></tr>
+          <tr><td class="kw">what should be on a marketing dashboard</td><td class="num">90</td><td class="num"><span class="kd-cell"><span class="kd-dot easy"></span>8</span></td></tr>
+          <tr><td class="kw">how to track marketing ROI in a dashboard</td><td class="num">50</td><td class="num"><span class="kd-cell"><span class="kd-dot unknown"></span>&mdash;</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-subheading">People Also Ask</div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>Answer Format</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>What are the key metrics for a marketing dashboard?</td><td><span class="format-badge">List</span></td></tr>
+          <tr><td>How do you build a marketing dashboard in Google Sheets?</td><td><span class="format-badge">Steps</span></td></tr>
+          <tr><td>What is the difference between a dashboard and a report?</td><td><span class="format-badge">Paragraph</span></td></tr>
+          <tr><td>How often should you update your marketing dashboard?</td><td><span class="format-badge">Paragraph</span></td></tr>
+          <tr><td>What is the best free marketing dashboard tool?</td><td><span class="format-badge">List</span></td></tr>
+          <tr><td>How do you present a marketing dashboard to executives?</td><td><span class="format-badge">Paragraph + List</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <strong>PAA integration:</strong> The first 4 questions map directly to sections in the recommended structure. "Best free tool" can be handled via a comparison table. "How to present to executives" is a differentiation angle — no competitor covers this well.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- AUTOCOMPLETE / RELATED -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="section fade-in">
+      <h2 class="section-heading">Autocomplete &amp; Related Searches</h2>
+      <div class="tag-cloud">
+        <span class="tag highlight">marketing dashboard examples</span>
+        <span class="tag highlight">marketing dashboard template</span>
+        <span class="tag highlight">marketing dashboard KPIs</span>
+        <span class="tag">marketing dashboard google analytics</span>
+        <span class="tag">marketing dashboard power bi</span>
+        <span class="tag">marketing dashboard looker studio</span>
+        <span class="tag highlight">CMO dashboard</span>
+        <span class="tag">social media marketing dashboard</span>
+        <span class="tag">email marketing dashboard</span>
+        <span class="tag highlight">marketing campaign dashboard</span>
+        <span class="tag">content marketing dashboard</span>
+        <span class="tag">B2B marketing dashboard</span>
+        <span class="tag highlight">marketing dashboard metrics</span>
+        <span class="tag">marketing dashboard design</span>
+        <span class="tag">automated marketing dashboard</span>
+        <span class="tag">marketing dashboard best practices</span>
+        <span class="tag">marketing analytics tools comparison</span>
+        <span class="tag">real time marketing analytics</span>
+      </div>
+
+      <div class="insight">
+        <strong>Patterns:</strong> Strong tool-specific search behaviour (Google Analytics, Power BI, Looker Studio) — the article needs a tool comparison section. Channel-specific searches (social, email, content) suggest users want dashboard examples by channel. "CMO dashboard" indicates executive-level intent worth targeting.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- COMPETITOR ANALYSIS -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="section fade-in">
+      <h2 class="section-heading">Competitor Analysis</h2>
+
+      <!-- Competitor 1: DataBox -->
+      <details class="competitor-card">
+        <summary>
+          <div class="comp-header-left">
+            <div class="comp-name">DataBox &mdash; Marketing Dashboard: The Complete Guide</div>
+            <div class="comp-url">databox.com/marketing-dashboard</div>
+          </div>
+          <div class="comp-stats">
+            <div class="comp-stat">
+              <div class="comp-stat-label">Words</div>
+              <div class="comp-stat-value">4,230</div>
+            </div>
+            <div class="comp-stat">
+              <div class="comp-stat-label">Position</div>
+              <div class="comp-stat-value">#1</div>
+            </div>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </summary>
+        <div class="comp-body">
+          <div class="comp-section-label">Heading Structure</div>
+          <ul class="heading-tree">
+            <li class="level-1"><span class="h-tag">H1</span> Marketing Dashboard: The Complete Guide</li>
+            <li class="level-2"><span class="h-tag">H2</span> What Is a Marketing Dashboard?</li>
+            <li class="level-2"><span class="h-tag">H2</span> Why You Need a Marketing Dashboard</li>
+            <li class="level-2"><span class="h-tag">H2</span> Types of Marketing Dashboards</li>
+            <li class="level-2"><span class="h-tag">H2</span> Key Metrics to Track</li>
+            <li class="level-2"><span class="h-tag">H2</span> How to Build a Marketing Dashboard</li>
+            <li class="level-3"><span class="h-tag">H3</span> Step 1: Define Your Goals</li>
+            <li class="level-3"><span class="h-tag">H3</span> Step 2: Choose Your KPIs</li>
+            <li class="level-3"><span class="h-tag">H3</span> Step 3: Select a Tool</li>
+            <li class="level-2"><span class="h-tag">H2</span> Marketing Dashboard Examples</li>
+          </ul>
+
+          <div class="comp-analysis">
+            <strong>Gaps to exploit:</strong> Heavy product pitch — most examples use DataBox screenshots exclusively. No comparison of dashboard tools. No executive presentation guidance. No channel-specific dashboard breakdowns. No downloadable templates.
+          </div>
+        </div>
+      </details>
+
+      <!-- Competitor 2: HubSpot -->
+      <details class="competitor-card">
+        <summary>
+          <div class="comp-header-left">
+            <div class="comp-name">HubSpot &mdash; The Ultimate Guide to Marketing Dashboards</div>
+            <div class="comp-url">blog.hubspot.com/marketing/marketing-dashboard</div>
+          </div>
+          <div class="comp-stats">
+            <div class="comp-stat">
+              <div class="comp-stat-label">Words</div>
+              <div class="comp-stat-value" style="color: var(--warning);">6,820</div>
+            </div>
+            <div class="comp-stat">
+              <div class="comp-stat-label">DR</div>
+              <div class="comp-stat-value">93</div>
+            </div>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </summary>
+        <div class="comp-body">
+          <div class="comp-section-label">Heading Structure</div>
+          <ul class="heading-tree">
+            <li class="level-1"><span class="h-tag">H1</span> The Ultimate Guide to Marketing Dashboards</li>
+            <li class="level-2"><span class="h-tag">H2</span> What Is a Marketing Dashboard?</li>
+            <li class="level-2"><span class="h-tag">H2</span> Benefits of a Marketing Dashboard</li>
+            <li class="level-2"><span class="h-tag">H2</span> Marketing Dashboard KPIs</li>
+            <li class="level-3"><span class="h-tag">H3</span> Traffic Metrics</li>
+            <li class="level-3"><span class="h-tag">H3</span> Lead Generation Metrics</li>
+            <li class="level-3"><span class="h-tag">H3</span> Social Media Metrics</li>
+            <li class="level-3"><span class="h-tag">H3</span> Email Marketing Metrics</li>
+            <li class="level-2"><span class="h-tag">H2</span> How to Create a Marketing Dashboard</li>
+            <li class="level-2"><span class="h-tag">H2</span> Best Marketing Dashboard Software</li>
+            <li class="level-2"><span class="h-tag">H2</span> Marketing Dashboard Templates</li>
+          </ul>
+
+          <div class="comp-analysis">
+            <strong>Gaps to exploit:</strong> Published 2023, not updated since. KPI section is generic — lists metrics without explaining what's actionable vs vanity. Tool comparison is thin (5 tools, no pricing or feature matrix). No real-world examples with annotated screenshots. No B2B vs B2C distinction.
+          </div>
+        </div>
+      </details>
+
+      <!-- Competitor 3: GeckoBoard -->
+      <details class="competitor-card">
+        <summary>
+          <div class="comp-header-left">
+            <div class="comp-name">Geckoboard &mdash; Marketing Dashboard: Metrics, Examples &amp; Best Practices</div>
+            <div class="comp-url">geckoboard.com/learn/marketing-dashboard/</div>
+          </div>
+          <div class="comp-stats">
+            <div class="comp-stat">
+              <div class="comp-stat-label">Words</div>
+              <div class="comp-stat-value">2,150</div>
+            </div>
+            <div class="comp-stat">
+              <div class="comp-stat-label">DR</div>
+              <div class="comp-stat-value">72</div>
+            </div>
+          </div>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </summary>
+        <div class="comp-body">
+          <div class="comp-section-label">Heading Structure</div>
+          <ul class="heading-tree">
+            <li class="level-1"><span class="h-tag">H1</span> Marketing Dashboard: Metrics, Examples &amp; Best Practices</li>
+            <li class="level-2"><span class="h-tag">H2</span> What Is a Marketing Dashboard?</li>
+            <li class="level-2"><span class="h-tag">H2</span> Key Marketing Metrics to Track</li>
+            <li class="level-2"><span class="h-tag">H2</span> Marketing Dashboard Examples</li>
+            <li class="level-2"><span class="h-tag">H2</span> Best Practices</li>
+            <li class="level-2"><span class="h-tag">H2</span> FAQ</li>
+          </ul>
+
+          <div class="comp-analysis">
+            <strong>Gaps to exploit:</strong> Thin at 2,150 words — insufficient depth. No step-by-step build guide. Examples are product-specific (Geckoboard only). FAQ is minimal. Beatable on depth, breadth of examples, and tool-agnostic approach.
+          </div>
+        </div>
+      </details>
+
+      <!-- Word count comparison -->
+      <div class="section-subheading">Word Count Comparison</div>
+      <div class="wc-comparison">
+        <div class="wc-row">
+          <span class="wc-label">Geckoboard</span>
+          <div class="wc-bar-track"><div class="wc-bar comp" style="width: 31.5%"></div></div>
+          <span class="wc-num">2,150</span>
+        </div>
+        <div class="wc-row">
+          <span class="wc-label">DataBox</span>
+          <div class="wc-bar-track"><div class="wc-bar comp" style="width: 62%"></div></div>
+          <span class="wc-num">4,230</span>
+        </div>
+        <div class="wc-row">
+          <span class="wc-label">HubSpot</span>
+          <div class="wc-bar-track"><div class="wc-bar outlier" style="width: 100%"></div></div>
+          <span class="wc-num" style="color: var(--warning);">6,820</span>
+        </div>
+        <div class="wc-row">
+          <span class="wc-label" style="font-weight: 600; color: var(--accent);">Target</span>
+          <div class="wc-bar-track"><div class="wc-bar target" style="width: 55.7%"></div></div>
+          <span class="wc-num" style="font-weight: 600; color: var(--accent);">3,800</span>
+        </div>
+      </div>
+
+      <div class="insight">
+        Competitor lengths vary 2,150–6,820 words. The 3,800-word target beats Geckoboard comprehensively and matches DataBox's depth without HubSpot's padding. Every section should earn its place — density over length.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- RECOMMENDED HEADING STRUCTURE -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="section fade-in">
+      <h2 class="section-heading">Recommended Heading Structure</h2>
+
+      <ul class="rec-heading-tree">
+        <li class="level-1"><span class="h-tag h1">H1</span> Marketing Dashboard: The Complete Guide to Metrics, Tools &amp; Examples (2026)</li>
+        <li class="level-2"><span class="h-tag h2">H2</span> What Is a Marketing Dashboard?</li>
+        <li class="level-3"><span class="h-tag h3">H3</span> Dashboard vs Report: What's the Difference?</li>
+        <li class="level-2"><span class="h-tag h2">H2</span> Key Marketing Dashboard Metrics by Channel</li>
+        <li class="level-3"><span class="h-tag h3">H3</span> Website &amp; SEO Metrics</li>
+        <li class="level-3"><span class="h-tag h3">H3</span> Paid Advertising Metrics</li>
+        <li class="level-3"><span class="h-tag h3">H3</span> Email Marketing Metrics</li>
+        <li class="level-3"><span class="h-tag h3">H3</span> Social Media Metrics</li>
+        <li class="level-2"><span class="h-tag h2">H2</span> How to Build a Marketing Dashboard (Step by Step)</li>
+        <li class="level-3"><span class="h-tag h3">H3</span> Step 1: Define Your Audience and Goals</li>
+        <li class="level-3"><span class="h-tag h3">H3</span> Step 2: Choose Metrics That Drive Decisions</li>
+        <li class="level-3"><span class="h-tag h3">H3</span> Step 3: Connect Your Data Sources</li>
+        <li class="level-3"><span class="h-tag h3">H3</span> Step 4: Design for Clarity, Not Complexity</li>
+        <li class="level-2"><span class="h-tag h2">H2</span> Marketing Dashboard Examples</li>
+        <li class="level-3"><span class="h-tag h3">H3</span> CMO Executive Dashboard</li>
+        <li class="level-3"><span class="h-tag h3">H3</span> Campaign Performance Dashboard</li>
+        <li class="level-3"><span class="h-tag h3">H3</span> Content Marketing Dashboard</li>
+        <li class="level-2"><span class="h-tag h2">H2</span> Best Marketing Dashboard Tools Compared</li>
+        <li class="level-2"><span class="h-tag h2">H2</span> How to Present a Marketing Dashboard to Leadership</li>
+        <li class="level-2"><span class="h-tag h2">H2</span> FAQ: Marketing Dashboards</li>
+      </ul>
+
+      <div class="heading-rationale">
+        <strong>Structure rationale:</strong> Follows the search intent flow — definition (snippet target) &rarr; metrics by channel (addresses channel-specific searches) &rarr; step-by-step build guide (how-to intent) &rarr; annotated examples (visual intent) &rarr; tool comparison (commercial intent) &rarr; executive presentation (unique differentiator) &rarr; FAQ. The "Present to Leadership" section is Acme's differentiation — no competitor covers this angle.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SEMANTIC KEYWORDS -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="section fade-in">
+      <h2 class="section-heading">Semantic Keywords</h2>
+      <div class="tag-cloud">
+        <span class="tag">marketing KPIs</span>
+        <span class="tag">data visualization</span>
+        <span class="tag">campaign performance</span>
+        <span class="tag">conversion rate</span>
+        <span class="tag">customer acquisition cost</span>
+        <span class="tag">return on ad spend</span>
+        <span class="tag">click-through rate</span>
+        <span class="tag">cost per lead</span>
+        <span class="tag">marketing attribution</span>
+        <span class="tag">Google Analytics</span>
+        <span class="tag">Looker Studio</span>
+        <span class="tag">Power BI</span>
+        <span class="tag">Tableau</span>
+        <span class="tag">real-time analytics</span>
+        <span class="tag">data-driven marketing</span>
+        <span class="tag">marketing automation</span>
+        <span class="tag">funnel metrics</span>
+        <span class="tag">pipeline velocity</span>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- INTERNAL LINKING -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="section fade-in">
+      <h2 class="section-heading">Internal Linking</h2>
+      <table class="link-table">
+        <thead>
+          <tr>
+            <th>Anchor Text</th>
+            <th>Target URL</th>
+            <th>Section</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="anchor">marketing analytics platform</td>
+            <td class="url-col">acmeanalytics.com/platform</td>
+            <td>How to Build a Marketing Dashboard</td>
+          </tr>
+          <tr>
+            <td class="anchor">data connectors</td>
+            <td class="url-col">acmeanalytics.com/integrations</td>
+            <td>Connect Your Data Sources</td>
+          </tr>
+          <tr>
+            <td class="anchor">campaign tracking</td>
+            <td class="url-col">acmeanalytics.com/features/campaign-tracking</td>
+            <td>Campaign Performance Dashboard</td>
+          </tr>
+          <tr>
+            <td class="anchor">marketing attribution</td>
+            <td class="url-col">acmeanalytics.com/blog/marketing-attribution</td>
+            <td>Key Metrics by Channel</td>
+          </tr>
+          <tr>
+            <td class="anchor">custom dashboards</td>
+            <td class="url-col">acmeanalytics.com/features/dashboards</td>
+            <td>Best Marketing Dashboard Tools Compared</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="insight">
+        Verify exact URLs before publishing. The site may have more specific feature pages for individual dashboard components.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- WRITING NOTES -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="section fade-in">
+      <h2 class="section-heading">Writing Notes</h2>
+
+      <div class="writing-notes">
+        <div class="note-block">
+          <div class="note-label">Voice</div>
+          <div class="note-text">Practical and knowledgeable. Write for a marketing manager who's built dashboards before but wants to do it better. Avoid beginner-level explanations of what a KPI is. The reader knows marketing — they need dashboard-specific guidance.</div>
+        </div>
+
+        <div class="note-block">
+          <div class="note-label">Differentiation Angle</div>
+          <div class="note-text">Every current top result is either a <strong>vendor product pitch</strong> (DataBox, Geckoboard) or a <strong>generic content marketing play</strong> (HubSpot). None covers the executive communication angle — how to design dashboards that drive decisions, not just display data. Acme's angle: <strong>"A dashboard that doesn't change behaviour is a screensaver."</strong> Focus on actionable design over comprehensive metric lists.</div>
+        </div>
+
+        <div class="note-block">
+          <div class="note-label">Meta Title</div>
+          <div class="meta-title-preview">Marketing Dashboard Guide: Metrics, Tools &amp; Examples (2026)</div>
+        </div>
+
+        <div class="note-block">
+          <div class="note-label">Featured Snippet Targets</div>
+          <ul class="snippet-targets">
+            <li><strong>"What is a marketing dashboard"</strong> — 2-3 sentence definition paragraph under H2</li>
+            <li><strong>"Marketing dashboard KPIs"</strong> — bulleted list of 8-10 key metrics</li>
+            <li><strong>"How to build a marketing dashboard"</strong> — numbered step list under H2</li>
+          </ul>
+        </div>
+
+        <div class="note-block">
+          <div class="note-label">Schema Markup</div>
+          <div class="note-text">Implement <strong>FAQ schema</strong> on the FAQ section (5-6 questions). Consider <strong>HowTo schema</strong> for the step-by-step build section.</div>
+        </div>
+
+        <div class="note-block">
+          <div class="note-label">SERP Context</div>
+          <div class="note-text"><strong>AI Overview present</strong> — Google is synthesizing from multiple sources because no single guide is comprehensive enough. Top positions held by vendor blogs with product bias. Acme differentiates by being <strong>tool-agnostic and decision-focused</strong> rather than pushing a specific product.</div>
+        </div>
+
+        <div class="note-block">
+          <div class="note-label">Content Hub Strategy</div>
+          <div class="note-text">This article anchors a <strong>marketing analytics content cluster</strong>. Supporting articles: "Marketing Attribution Models" (striking distance), "Campaign ROI" (new), "Data Storytelling" (new). Internal linking between these pieces builds topical authority.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Footer ── -->
+    <footer class="report-footer fade-in">
+      <span>15 Mar 2026</span>
+      <span>SEO Plugin by Brad Bonanno</span>
+    </footer>
+
+  </div>
+
+  <script>
+    // Smooth expand/collapse for details elements
+    document.querySelectorAll('details.competitor-card').forEach(detail => {
+      const summary = detail.querySelector('summary');
+      const body = detail.querySelector('.comp-body');
+
+      summary.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (detail.open) {
+          body.style.maxHeight = body.scrollHeight + 'px';
+          requestAnimationFrame(() => {
+            body.style.maxHeight = '0';
+            body.style.opacity = '0';
+          });
+          setTimeout(() => {
+            detail.open = false;
+            body.style.maxHeight = '';
+            body.style.opacity = '';
+          }, 250);
+        } else {
+          detail.open = true;
+          const h = body.scrollHeight;
+          body.style.maxHeight = '0';
+          body.style.opacity = '0';
+          body.style.overflow = 'hidden';
+          body.style.transition = 'max-height 0.3s ease, opacity 0.3s ease';
+          requestAnimationFrame(() => {
+            body.style.maxHeight = h + 'px';
+            body.style.opacity = '1';
+          });
+          setTimeout(() => {
+            body.style.maxHeight = '';
+            body.style.overflow = '';
+            body.style.transition = '';
+          }, 300);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

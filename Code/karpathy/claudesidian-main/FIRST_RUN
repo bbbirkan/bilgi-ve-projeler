@@ -1,0 +1,6 @@
+# First Run Marker
+
+This file indicates that init-bootstrap has not been run yet.
+It will be automatically removed after successful setup.
+
+Please run: /init-bootstrap

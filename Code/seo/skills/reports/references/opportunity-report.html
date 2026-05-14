@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Marketing Opportunities — Acme Analytics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FAF6F1;
+      --surface: #FFFFFF;
+      --surface-hover: #FDF9F5;
+      --border: #E8E0D8;
+      --text: #1A1A1A;
+      --text-secondary: #6B6560;
+      --accent: #D4572A;
+      --accent-light: #FFF0EB;
+      --accent-hover: #B8461F;
+      --positive: #1D7A4E;
+      --positive-light: #EDFAF3;
+      --warning: #B8860B;
+      --warning-light: #FFF8E6;
+      --tag-bg: #F0ECE6;
+      --heading-font: 'Instrument Serif', serif;
+      --body-font: 'DM Sans', sans-serif;
+      --mono-font: 'IBM Plex Mono', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--body-font);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.95rem;
+      padding: 2.5rem 1.5rem;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      margin-bottom: 2.5rem;
+    }
+    .header-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .header h1 {
+      font-family: var(--heading-font);
+      font-size: 2rem;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+    .header-meta {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    /* Executive Summary */
+    .exec-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .exec-card p {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+    }
+    .metric-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .metric-item {
+      flex: 1;
+      min-width: 120px;
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      text-align: center;
+    }
+    .metric-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      margin-bottom: 0.3rem;
+    }
+    .metric-value {
+      font-family: var(--mono-font);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .metric-value.positive { color: var(--positive); }
+
+    /* Section heading */
+    .section-heading {
+      font-family: var(--heading-font);
+      font-size: 1.35rem;
+      font-weight: 400;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    /* Opportunity Cards */
+    .opp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .opp-card:hover { border-color: #d0c8bf; }
+
+    .opp-header {
+      padding: 1.5rem 1.75rem 1rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .opp-top-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .opp-title-area { flex: 1; }
+    .opp-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      margin-bottom: 0.35rem;
+    }
+    .badge-new { background: var(--accent-light); color: var(--accent); }
+    .badge-do-first { background: var(--accent-light); color: var(--accent-hover); }
+    .badge-quick-win { background: var(--positive-light); color: var(--positive); }
+    .badge-do-second { background: var(--warning-light); color: var(--warning); }
+
+    .opp-headline {
+      font-family: var(--heading-font);
+      font-size: 1.1rem;
+      font-weight: 400;
+      line-height: 1.35;
+    }
+    .value-pill {
+      font-family: var(--mono-font);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--positive);
+      background: var(--positive-light);
+      padding: 0.3rem 0.75rem;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .opp-why {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin-bottom: 0.75rem;
+    }
+    .opp-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 0.5rem;
+    }
+    .tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      background: var(--tag-bg);
+      color: var(--text-secondary);
+    }
+
+    .chevron {
+      display: inline-block;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      transition: transform 0.25s;
+      margin-left: 0.25rem;
+    }
+    .opp-card.open .chevron { transform: rotate(90deg); }
+
+    /* Expanded detail */
+    .opp-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+    .opp-card.open .opp-detail {
+      max-height: 1200px;
+    }
+    .opp-detail-inner {
+      padding: 0 1.75rem 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .detail-section-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .detail-text {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    /* Keyword cluster table */
+    .kw-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+    }
+    .kw-table th {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .kw-table th:nth-child(2),
+    .kw-table th:nth-child(3) { text-align: right; }
+    .kw-table td {
+      font-size: 0.85rem;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .kw-table td:nth-child(2),
+    .kw-table td:nth-child(3) {
+      text-align: right;
+      font-family: var(--mono-font);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .kw-table tr:last-child td { border-bottom: none; }
+
+    .kd-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 0.3rem;
+      vertical-align: middle;
+    }
+    .kd-dot.easy { background: var(--positive); }
+    .kd-dot.medium { background: var(--warning); }
+    .kd-dot.hard { background: var(--accent); }
+
+    /* Footer */
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    /* Print */
+    @media print {
+      body { background: white; padding: 1rem; }
+      .opp-card.open .opp-detail { max-height: none; }
+      .opp-detail { max-height: none !important; overflow: visible !important; }
+      .opp-card { break-inside: avoid; }
+      .chevron { display: none; }
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      body { padding: 1.5rem 1rem; }
+      .exec-card, .opp-header, .opp-detail-inner { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .metric-row { flex-direction: column; }
+      .opp-top-row { flex-direction: column; gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-label">SEO Opportunity Report</div>
+      <h1>Content Marketing &amp; Analytics Opportunities</h1>
+      <div class="header-meta">Acme Analytics · acmeanalytics.com · 15 March 2026 · Market: United States</div>
+    </div>
+
+    <!-- Executive Summary -->
+    <div class="exec-card">
+      <p>Acme Analytics has <strong>strong positions in "data visualization"</strong> but significant blind spots in the adjacent content marketing analytics space. DataBox dominates mid-funnel searches while HubSpot and Supermetrics control the reporting narrative. The combined opportunity across four clusters is worth an estimated <strong>$18,430/mo</strong>, with striking-distance keywords offering the fastest path to revenue. DataBox recently published a content hub on marketing dashboards — the window to compete is narrowing.</p>
+      <div class="metric-row">
+        <div class="metric-item">
+          <div class="metric-label">Total Value</div>
+          <div class="metric-value positive">$18,430/mo</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">Top Opportunity</div>
+          <div class="metric-value positive">$7,650/mo</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">Avg KD</div>
+          <div class="metric-value">24</div>
+        </div>
+        <div class="metric-item">
+          <div class="metric-label">Opportunities</div>
+          <div class="metric-value">4</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Opportunities -->
+    <h2 class="section-heading">Opportunities</h2>
+
+    <!-- 1. Marketing Dashboard -->
+    <div class="opp-card" onclick="this.classList.toggle('open')">
+      <div class="opp-header">
+        <div class="opp-top-row">
+          <div class="opp-title-area">
+            <div><span class="opp-badge badge-do-first">DO FIRST</span></div>
+            <div class="opp-headline">DataBox owns "marketing dashboard" — 4,200/mo with no comprehensive comparison guide in sight</div>
+          </div>
+          <div class="value-pill">$7,650/mo</div>
+        </div>
+        <div class="opp-why">DataBox holds #1 across all "marketing dashboard" variations. Average KD is 18 — content-quality SERP with wide DR spread. Three of the top 5 results are older than 18 months. AI Overview present, synthesizing because no single guide covers dashboard selection criteria comprehensively.</div>
+        <div class="opp-tags">
+          <span class="tag">Strong evidence</span>
+          <span class="tag">Create new</span>
+          <span class="tag">8 keywords</span>
+          <span class="tag">KD 18</span>
+        </div>
+        <span class="chevron">&#9654;</span>
+      </div>
+      <div class="opp-detail">
+        <div class="opp-detail-inner">
+          <div class="detail-section-title">SERP Assessment</div>
+          <div class="detail-text">Top results: databox.com (#1), hubspot.com (#2), geckoboard.com (#3), klipfolio.com (#4), supermetrics.com (#5). Mix of vendor landing pages and blog content. Wide DR spread (35–92). The top results are product-focused — no independent comparison or buyer's guide exists. Reddit appearing at #8 signals content gap.</div>
+
+          <div class="detail-section-title">Action</div>
+          <div class="detail-text">Create a comprehensive marketing dashboard comparison and buyer's guide. Cover selection criteria, integration requirements, pricing tiers, and use-case matching. Position Acme Analytics as the data layer that powers any dashboard choice.</div>
+
+          <div class="detail-section-title">Keyword Cluster</div>
+          <table class="kw-table">
+            <thead><tr><th>Keyword</th><th>Volume</th><th>KD</th></tr></thead>
+            <tbody>
+              <tr><td>marketing dashboard</td><td>2,400</td><td><span class="kd-dot easy"></span>18</td></tr>
+              <tr><td>marketing analytics dashboard</td><td>720</td><td><span class="kd-dot easy"></span>14</td></tr>
+              <tr><td>marketing dashboard examples</td><td>480</td><td><span class="kd-dot easy"></span>12</td></tr>
+              <tr><td>best marketing dashboard</td><td>320</td><td><span class="kd-dot easy"></span>22</td></tr>
+              <tr><td>digital marketing dashboard</td><td>260</td><td><span class="kd-dot easy"></span>15</td></tr>
+              <tr><td>marketing dashboard template</td><td>210</td><td><span class="kd-dot easy"></span>20</td></tr>
+              <tr><td>marketing reporting dashboard</td><td>170</td><td><span class="kd-dot easy"></span>11</td></tr>
+              <tr><td>free marketing dashboard</td><td>140</td><td><span class="kd-dot medium"></span>32</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Striking Distance — Marketing Attribution -->
+    <div class="opp-card" onclick="this.classList.toggle('open')">
+      <div class="opp-header">
+        <div class="opp-top-row">
+          <div class="opp-title-area">
+            <div><span class="opp-badge badge-do-first">DO FIRST</span></div>
+            <div class="opp-headline">Your attribution content ranks #8–14 — push to page 1 for $5,180/mo in modeled value</div>
+          </div>
+          <div class="value-pill">$5,180/mo</div>
+        </div>
+        <div class="opp-why">Acme already ranks positions 8–14 for multiple attribution keywords. Existing content is 14 months old and missing multi-touch models. HubSpot and Ruler Analytics hold top spots with fresher content. Updating and expanding the existing article is the fastest ROI play.</div>
+        <div class="opp-tags">
+          <span class="tag">Strong evidence</span>
+          <span class="tag">Optimize existing</span>
+          <span class="tag">6 keywords</span>
+          <span class="tag">KD 28</span>
+        </div>
+        <span class="chevron">&#9654;</span>
+      </div>
+      <div class="opp-detail">
+        <div class="opp-detail-inner">
+          <div class="detail-section-title">SERP Assessment</div>
+          <div class="detail-text">HubSpot holds #1 with a 2024 guide. Ruler Analytics #2 with strong backlinks. Acme's "Marketing Attribution 101" post sits at #11 but has thin coverage of multi-touch and algorithmic models. Top results average 3,200 words — Acme's post is 1,400. Freshness signal: the top 3 results were all updated in the last 6 months.</div>
+
+          <div class="detail-section-title">Action</div>
+          <div class="detail-text">Expand the existing attribution article from 1,400 to 3,500+ words. Add multi-touch attribution models (linear, time-decay, position-based, algorithmic), real-world examples with data, and a comparison table. Update the publish date and add FAQ schema.</div>
+
+          <div class="detail-section-title">Keyword Cluster</div>
+          <table class="kw-table">
+            <thead><tr><th>Keyword</th><th>Volume</th><th>KD</th></tr></thead>
+            <tbody>
+              <tr><td>marketing attribution</td><td>1,900</td><td><span class="kd-dot medium"></span>32</td></tr>
+              <tr><td>marketing attribution model</td><td>880</td><td><span class="kd-dot easy"></span>28</td></tr>
+              <tr><td>multi touch attribution</td><td>590</td><td><span class="kd-dot easy"></span>24</td></tr>
+              <tr><td>what is marketing attribution</td><td>320</td><td><span class="kd-dot easy"></span>18</td></tr>
+              <tr><td>attribution modeling</td><td>260</td><td><span class="kd-dot easy"></span>26</td></tr>
+              <tr><td>marketing attribution tools</td><td>210</td><td><span class="kd-dot medium"></span>38</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Campaign ROI -->
+    <div class="opp-card" onclick="this.classList.toggle('open')">
+      <div class="opp-header">
+        <div class="opp-top-row">
+          <div class="opp-title-area">
+            <div><span class="opp-badge badge-quick-win">QUICK WIN</span></div>
+            <div class="opp-headline">Reddit ranking #3 for "campaign ROI" — classic content gap with direct product tie-in</div>
+          </div>
+          <div class="value-pill">$3,420/mo</div>
+        </div>
+        <div class="opp-why">Reddit in position 3 signals no quality marketer-focused content exists. Featured snippet held by Investopedia (generic finance definition). Small marketing blogs holding remaining spots — beatable on content depth and authority. Direct tie-in to Acme's campaign analytics features.</div>
+        <div class="opp-tags">
+          <span class="tag">Growing evidence</span>
+          <span class="tag">Create new</span>
+          <span class="tag">5 keywords</span>
+          <span class="tag">KD 12</span>
+        </div>
+        <span class="chevron">&#9654;</span>
+      </div>
+      <div class="opp-detail">
+        <div class="opp-detail-inner">
+          <div class="detail-section-title">SERP Assessment</div>
+          <div class="detail-text">Featured snippet from Investopedia (generic ROI definition). Organic: hubspot.com (#1), marketingprofs.com (#2), reddit.com/r/marketing (#3), neilpatel.com (#4), wordstream.com (#5). Mixed DR — content-quality SERP. No result covers campaign-specific ROI calculation with real formulas and benchmarks by channel.</div>
+
+          <div class="detail-section-title">Action</div>
+          <div class="detail-text">Create a comprehensive guide on measuring marketing campaign ROI, covering channel-specific formulas (paid, organic, email, social), benchmark data by industry, common calculation mistakes, and how analytics tools automate ROI tracking.</div>
+
+          <div class="detail-section-title">Keyword Cluster</div>
+          <table class="kw-table">
+            <thead><tr><th>Keyword</th><th>Volume</th><th>KD</th></tr></thead>
+            <tbody>
+              <tr><td>marketing campaign ROI</td><td>720</td><td><span class="kd-dot easy"></span>14</td></tr>
+              <tr><td>how to measure marketing ROI</td><td>590</td><td><span class="kd-dot easy"></span>12</td></tr>
+              <tr><td>marketing ROI formula</td><td>480</td><td><span class="kd-dot easy"></span>10</td></tr>
+              <tr><td>marketing ROI benchmarks</td><td>210</td><td><span class="kd-dot easy"></span>8</td></tr>
+              <tr><td>campaign ROI calculator</td><td>170</td><td><span class="kd-dot easy"></span>15</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Data Storytelling -->
+    <div class="opp-card" onclick="this.classList.toggle('open')">
+      <div class="opp-header">
+        <div class="opp-top-row">
+          <div class="opp-title-area">
+            <div><span class="opp-badge badge-do-second">DO SECOND</span></div>
+            <div class="opp-headline">Data storytelling demand up 45% — emerging topic with no established content leader</div>
+          </div>
+          <div class="value-pill">$2,180/mo</div>
+        </div>
+        <div class="opp-why">Search volume for "data storytelling" up 45% YoY. Top results are generic thought leadership — no actionable framework with examples exists. Tableau and Microsoft Power BI have blog posts but nothing comprehensive. Supports Acme's positioning as the insights layer, not just a data pipe.</div>
+        <div class="opp-tags">
+          <span class="tag">Growing evidence</span>
+          <span class="tag">Create new</span>
+          <span class="tag">5 keywords</span>
+          <span class="tag">KD 20</span>
+        </div>
+        <span class="chevron">&#9654;</span>
+      </div>
+      <div class="opp-detail">
+        <div class="opp-detail-inner">
+          <div class="detail-section-title">SERP Assessment</div>
+          <div class="detail-text">Top results: tableau.com (#1, thin blog post), nugit.co (#2, tool page), storytellingwithdata.com (#3, book promo), hbr.org (#4, 2019 article). All results are either tool pitches or dated content. No single guide combines framework + examples + tools. DR range 28–92 — content-quality wins possible.</div>
+
+          <div class="detail-section-title">Action</div>
+          <div class="detail-text">Create the definitive guide to data storytelling for marketers. Cover narrative frameworks, visualization best practices, real before/after examples, and how to present data to executives. Position as a skill guide, not a tool pitch.</div>
+
+          <div class="detail-section-title">Keyword Cluster</div>
+          <table class="kw-table">
+            <thead><tr><th>Keyword</th><th>Volume</th><th>KD</th></tr></thead>
+            <tbody>
+              <tr><td>data storytelling</td><td>1,300</td><td><span class="kd-dot easy"></span>22</td></tr>
+              <tr><td>data storytelling examples</td><td>480</td><td><span class="kd-dot easy"></span>15</td></tr>
+              <tr><td>how to tell a story with data</td><td>320</td><td><span class="kd-dot easy"></span>18</td></tr>
+              <tr><td>data storytelling framework</td><td>170</td><td><span class="kd-dot easy"></span>12</td></tr>
+              <tr><td>data driven storytelling</td><td>140</td><td><span class="kd-dot easy"></span>20</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      15 March 2026 · SEO Plugin by Brad Bonanno
+    </div>
+
+  </div>
+
+  <script>
+    // Cards are toggled via onclick on .opp-card
+  </script>
+</body>
+</html>
