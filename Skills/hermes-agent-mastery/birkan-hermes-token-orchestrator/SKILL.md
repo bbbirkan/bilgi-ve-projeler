@@ -56,6 +56,91 @@ Kullanım:
 
 ---
 
+## Model Yeteneklerine Göre Routing
+
+### Çok büyük dosya / mega-context
+**Birinci tercih:** `deepseek/deepseek-v4-flash`
+
+Neden:
+- 1M context.
+- Çok ucuz input/output.
+- Ham metin tarama, indeksleme, bölümleme ve “needle finding” için iyi aday.
+
+Kullanım:
+- 100K+ token metin.
+- Büyük PDF / kitap / log dump.
+- Çok büyük JSON/CSV/HTML çıktı.
+- Önce DeepSeek V4 Flash ile bölüm haritası çıkarılır.
+- Sonra gerekirse GLM/Gemini ile bölüm özetleri alınır.
+- Final sentez GPT-5.5 veya Claude Opus 4.6 ile yapılır.
+
+### Genel işçi / dengeli akıl
+**Birinci tercih:** `z-ai/glm-4.7`
+
+Neden:
+- İyi genel worker.
+- Kod/prototip/özet/araştırma dengesi iyi.
+- Delegation default modeli olarak kullanılır.
+
+Kullanım:
+- Standart subagent işleri.
+- 5-20 kaynak web araştırması.
+- Kod dosyası inceleme.
+- Wiki sayfası taslağı.
+
+### Hızlı ve ucuz özet / multimodal uyum
+**Birinci tercih:** `google/gemini-3-flash-preview`
+
+Kullanım:
+- Hızlı ikinci özet.
+- Uzun bölümden kısa bullet çıkarma.
+- Tablo/JSON formatlama.
+- Çok modlu içerik ihtimali varsa ön değerlendirme.
+
+### En ucuz işçi / toplu sınıflandırma
+**Birinci tercih:** `minimax/minimax-m2.5`
+
+Kullanım:
+- Çok sayıda küçük metin sınıflandırma.
+- Basit extraction.
+- “Bu metin hangi kategori?” tarzı işler.
+- Maliyet kritik batch işlemleri.
+
+### Zor kod / mimari / yüksek doğruluk
+**ÜST tercih sırası:**
+1. `openai/gpt-5.5`
+2. `anthropic/claude-opus-4.6`
+3. `deepseek/deepseek-v4-pro`
+4. `anthropic/claude-opus-4.7`
+
+Kullanım:
+- Final karar.
+- Mimari tasarım.
+- Kritik kod değişikliği.
+- Çelişkili kaynakları uzlaştırma.
+
+### Routing pseudo-code
+
+```text
+if task == huge_file or tokens > 100k:
+    worker = deepseek/deepseek-v4-flash
+    action = map_sections + extract_key_claims + save_to_wiki
+elif task == normal_research or standard_subagent:
+    worker = z-ai/glm-4.7
+elif task == fast_summary or table_json_format:
+    worker = google/gemini-3-flash-preview
+elif task == cheap_batch_classification:
+    worker = minimax/minimax-m2.5
+else:
+    worker = z-ai/glm-4.7
+
+final_synthesis = openai/gpt-5.5
+if GPT-5.5 fails or too expensive:
+    final_synthesis = anthropic/claude-opus-4.6
+```
+
+---
+
 ## Routing Kuralları
 
 ### Basit sohbet / kısa cevap
