@@ -1,16 +1,20 @@
 ---
 name: birkan-model-secim
-description: "Birkan için aylık AI model seçim kararı — LMSYS Arena, Artificial Analysis ve OpenRouter'dan gerçek benchmark verileri çekerek profesyonel PDF tablo oluşturur. Sadece PDF atar, Telegram'a mesaj yazmaz. Her ay başı çalışır. Her firmadan max 2 model kuralı."
+description: "Birkan için aylık AI model seçim kararı — 40+ benchmark sitesinden gerçek verilerle profesyonel PDF tablo oluşturur. Sadece PDF atar, Telegram'a mesaj yazmaz. Her ay başı çalışır. Her firmadan max 2 model kuralı."
 trigger:
   - "Haziran model seçeceğiz"
   - "model secim"
   - "PDF model"
   - "aylık model"
+  - "model seçimi"
+  - "benchmark"
 ---
 
-# 🤖 Birkan Model Seçim Skill'i
+# 🤖 Birkan Model Seçim Skill'i (v2)
 
 Bu skill, Birkan'ın her ay başı talep ettiği AI model seçim sürecini tam otomasyonla çalıştırır. Sadece PDF oluşturur ve atar — Telegram'a mesaj yazmaz.
+
+> **Kaynak:** Bu skill, Birkan'ın sağladığı 2026 benchmark rehberi ile oluşturulmuştur. 40+ benchmark sitesi, 8 kategori, tam metodoloji dahil.
 
 ---
 
@@ -20,7 +24,8 @@ Bu skill, Birkan'ın her ay başı talep ettiği AI model seçim sürecini tam o
 2. Sistem:
    - LMSYS Arena'dan güncel ELO/rank verilerini çeker
    - OpenRouter'dan fiyat ve context bilgilerini çeker
-   - Artificial Analysis'dan benchmark puanlarını çeker
+   - Artificial Analysis'den benchmark puanlarını çeker
+   - 40+ benchmark sitesinden özellikler derlenir
    - Türkçe karakterli profesyonel PDF oluşturur
    - PDF'yi Birkan'a gönderir
 3. Birkan seçim yapar → config güncellenir
@@ -31,19 +36,17 @@ Bu skill, Birkan'ın her ay başı talep ettiği AI model seçim sürecini tam o
 
 ### Firma Başı Max 2 Model
 - Her AI firmasından (OpenAI, Anthropic, Google, vs.) en fazla 2 model kullanılır
-- Böylece çeşitlilik sağlanır, tek firma bağımlılığı önlenir
 - ÜST AJAN ve ALT AJAN listeleri tamamen ayrık olmalı (disjoint set)
+- Aynı model iki listede yer alamaz
 
 ### ÜST AJAN — Telegram Sohbet (Kalite Odaklı)
 - 10 seçenek
 - Kalite + performans öncelikli
-- Daha pahalı modeller tercih edilebilir
-- Telif: Yaratıcı yazarlık, kodlama, araştırma
+- Telif: Yaratıcı yazarlık, kodlama, araştırma, multimodal
 
 ### ALT AJAN — Gateway/Cron (Maliyet Odaklı)
 - 12 seçenek
 - Maliyet + hız öncelikli
-- Ucuz modeller tercih edilmeli
 - Telif: Arka plan işleri, cron job'lar, otomasyon
 
 ---
@@ -55,46 +58,106 @@ Her model için şu sütunlar olur:
 | # | Firma | Model | Fiyat | Context | LMSYS | ⭐ En İyi Olduğu Alanlar |
 |---|-------|-------|-------|---------|-------|--------------------------|
 
-- ⭐ sütunu: OpenRouter model sayfalarından ve LMSYS Arena'dan derlenen en iyi olduğu 3 alan
+- ⭐ sütunu: OpenRouter model sayfalarından ve benchmark sitelerinden derlenen en iyi olduğu alanlar (virgülle ayrılmış)
 - Seçili model sarı renkle highlight edilir
 - Final tablo altta yeşil kutu içinde gösterilir
 
 ---
 
-## 🔧 Veri Kaynakları
+## 🔧 40+ Veri Kaynağı (Tam Liste)
 
-### 1. LMSYS Arena (lmarena.ai)
-- ELO puanları ve rank
-- Text, WebDev, Code, Image, Video kategorileri
-- Web sayfasından scrape edilir
+### 1. Genel (Çok-Yetenekli) Liderlik Tabloları
 
-### 2. OpenRouter (openrouter.ai)
-- Fiyat (input/output per 1M tokens)
-- Context length
-- Weekly token usage
-- Model açıklamaları
+| # | Site | URL | Odak |
+|---|------|-----|------|
+| 1 | **LMArena** | lmarena.ai | İnsan tercihi (Elo) — altın standart |
+| 2 | **Artificial Analysis** | artificialanalysis.ai | Intelligence Index + fiyat/hız |
+| 3 | **LiveBench** | livebench.ai | Kirlenme-dirençli akademik |
+| 4 | **Vellum** | vellum.ai/llm-leaderboard | Frontier tek-sayfa karşılaştırma |
+| 5 | **LLM-Stats** | llm-stats.com | Bileşik skor (300+ model) |
+| 6 | **BenchLM** | benchlm.ai | 230+ model × 190+ benchmark |
+| 7 | **Onyx Tier** | onyx.app/llm-leaderboard | S/A/B/C/D tier görünümü |
+| 8 | **HF Open LLM** | huggingface.co/spaces/open-llm-leaderboard | **ARŞİVLENDİ** (Haziran 2025) |
 
-### 3. Artificial Analysis (artificialanalysis.ai)
-- Benchmark puanları (MMLU, HumanEval, MATH, vs.)
-- Intelligence Index
-- Fiyat/performans karşılaştırması
+### 2. Kodlama (Coding) Benchmarkları
+
+| # | Site | URL | Odak |
+|---|------|-----|------|
+| 9 | **SWE-bench** | swebench.com | GitHub issue çözme |
+| 10 | **Scale SEAL Pro** | scale.com/leaderboard | Kontaminasyon-dirençli, 4 dilli |
+| 11 | **LiveCodeBench** | livecodebench.github.io | Kirlenme-dirençli kod |
+| 12 | **Aider Polyglot** | aider.chat/docs/leaderboards | Çok-dilli kod düzenleme |
+| 13 | **Terminal-Bench** | tbench.ai | CLI/terminal agent |
+| 14 | **BigCodeBench** | bigcode-bench.github.io | Pratik kütüphane kullanımı |
+| 15 | **CodeSOTA** | codesota.com/code-generation | Kod SOTA derleyici |
+
+### 3. Akıl Yürütme (Reasoning) & Matematik
+
+| # | Site | URL | Odak |
+|---|------|-----|------|
+| 16 | **GPQA Diamond** | github.com/idavidrein/gpqa | Lisansüstü bilim QA |
+| 17 | **HLE** | lastexam.ai | "Son akademik sınav" |
+| 18 | **FrontierMath** | epoch.ai/frontiermath | Araştırma matematik |
+| 19 | **AIME 2026** | artificialanalysis.ai/evaluations/aime | Olimpiyat matematiği |
+| 20 | **ARC-AGI-2/3** | arcprize.org | Akıcı zekâ |
+
+### 4. Multimodal (Görsel & Ses)
+
+| # | Site | URL | Odak |
+|---|------|-----|------|
+| 21 | **MMMU-Pro** | mmmu-benchmark.github.io | Üniversite seviyesi görsel QA |
+| 22 | **OpenVLM Leaderboard** | huggingface.co/spaces/opencompass/open_vlm_leaderboard | 100+ VLM |
+| 23 | **MathVista** | mathvista.github.io | Görsel matematik |
+| 24 | **AA Image Arena** | artificialanalysis.ai/image | Görsel üretim Elo |
+| 25 | **AA Video Arena** | artificialanalysis.ai/video/leaderboard | Video üretim |
+| 26 | **MMAU-Pro** | sakshi113.github.io/mmau_homepage | Ses akıl yürütme |
+| 27 | **HF Open ASR** | huggingface.co/spaces/hf-audio/open_asr_leaderboard | Konuşma tanıma |
+| 28 | **TTS Arena** | huggingface.co/spaces/TTS-AGI/TTS-Arena-V2 | Metinden-konuşmaya |
+
+### 5. Agent / Tool-Use Benchmarkları
+
+| # | Site | URL | Odak |
+|---|------|-----|------|
+| 29 | **GAIA** | huggingface.co/spaces/gaia-benchmark/leaderboard | Genel asistan agent |
+| 30 | **WebArena** | webarena.dev | Web sandbox agent |
+| 31 | **OSWorld** | os-world.github.io | Masaüstü computer use |
+| 32 | **τ²-bench** | github.com/sierra-research/tau-bench | Tool + policy + sim user |
+| 33 | **BFCL** | gorilla.cs.berkeley.edu/leaderboard.html | Function calling |
+| 34 | **HAL (Princeton)** | hal.cs.princeton.edu | Holistic agent + maliyet |
+| 35 | **MLE-bench** | github.com/openai/mle-bench | Veri-bilimi agent |
+
+### 6. Hız / Maliyet / Verimlilik
+
+| # | Site | URL | Odak |
+|---|------|-----|------|
+| 36 | **Artificial Analysis Speed** | artificialanalysis.ai | TPS, TTFT, fiyat |
+| 37 | **LLM-Stats** | llm-stats.com | LLM Stats Score |
+| 38 | **PricePerToken** | pricepertoken.com | Anlık fiyat tabloları |
+| 39 | **OpenRouter Rankings** | openrouter.ai/rankings | Gerçek kullanım popülaritesi |
+
+### 7. Güvenlik (Safety) Benchmarkları
+
+| # | Site | URL | Odak |
+|---|------|-----|------|
+| 40 | **AILuminate** | mlcommons.org/benchmarks/ailuminate | Endüstri standardı güvenlik |
+| 41 | **HELM Safety** | crfm.stanford.edu/helm/safety | Holistik + safety |
+| 42 | **TrustLLM** | trustllmbenchmark.github.io | 6 boyut güvenilirlik |
+| 43 | **HarmBench** | harmbench.org | Jailbreak/red-team dayanıklılığı |
 
 ---
 
 ## 🔍 Web Kazıma Yöntemi
 
-### LMSYS Arena'dan Veri Çekme
+### LMArena'dan Gerçek Zamanlı Veri
 
 ```bash
-# Direkt HTML çek ve model isimlerini ayıkla
 curl -sL "https://lmarena.ai/leaderboard" \
   -H "Accept: text/html" \
-  -H "User-Agent: Mozilla/5.0" | \
-  grep -oP 'claude-[a-z0-9-]*|gpt-[a-z0-9.-]*|gemini-[a-z0-9.-]*|kimi-[a-z0-9.-]*|deepseek-[a-z0-9.-]*' | \
-  sort -u | head -30
+  -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36" \
+  --compressed | grep -oP 'claude-[a-z0-9-]+|gpt-[a-z0-9.-]+|gemini-[a-z0-9.-]+|kimi-[a-z0-9.-]+' | sort -u | head -30
 ```
 
-### OpenRouter'dan Model Listesi
+### OpenRouter'dan Model Listesi + Fiyat
 
 ```bash
 curl -s "https://openrouter.ai/api/v1/models" | python3 -c "
@@ -110,12 +173,13 @@ for m in models:
             pricing = m.get('pricing', {})
             in_p = float(pricing.get('in', 0))
             out_p = float(pricing.get('out', 0))
-            print(f\"{m.get('id')} | ctx:{ctx//1000}K | \${in_p:.6f} in\")
+            tokens = m.get('tokens_used', 0)
+            print(f\"{m.get('id')} | ctx:{ctx//1000}K | \${in_p:.6f}in \${out_p:.6f}out | used:{tokens}\")
             break
-" | sort -t'|' -k3 -rn
+" 2>&1 | sort -t'|' -k4 -rn | head -20
 ```
 
-### OpenRouter Model Detay Sayfası
+### OpenRouter Model Detay Sayfası (Browser)
 
 Her model için detaylı özellikler:
 ```
@@ -124,91 +188,116 @@ https://openrouter.ai/{provider}/{model-id}
 Örnek: https://openrouter.ai/anthropic/claude-sonnet-4.6
 
 Bu sayfada:
-- Model açıklaması
-- Fiyat
+- Model açıklaması (en iyi olduğu alanlar)
+- Fiyat (input/output per 1M tokens)
 - Context length
-- Weekly tokens
-- Benchmark puanları (Code Categories, WebDev, vs.)
-- En iyi olduğu alanlar
+- Weekly token usage
+- LMSYS ELO ve rank
+- Category Performance (Code, WebDev, vs.)
+
+### Artificial Analysis'dan Intelligence Index
+
+```bash
+curl -s "https://artificialanalysis.ai/api/models" 2>/dev/null || \
+curl -sL "https://artificialanalysis.ai/models" | grep -i "intelligence\|score\|rank" | head -20
+```
 
 ---
 
 ## 📄 PDF Oluşturma
 
 ### Gerekli Kütüphane
-```python
-pip install reportlab
-# veya
-uv pip install reportlab
+```bash
+uv pip install reportlab pillow
 ```
 
-### PDF Şablonu (execute_code ile)
-
+### Font Kayıt (Türkçe İçin)
 ```python
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import cm
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-from reportlab.lib import colors
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-
-# Türkçe font kaydet
 pdfmetrics.registerFont(TTFont('DejaVu', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'))
 pdfmetrics.registerFont(TTFont('DejaVu-Bold', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'))
+```
 
-pdf_path = "/root/Hermes-Model-Secim-{Ay}-{Yil}.pdf"
-doc = SimpleDocTemplate(pdf_path, pagesize=A4, rightMargin=1.5*cm, leftMargin=1.5*cm)
+### PDF Şablonu
+```python
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.units import cm
+from reportlab.lib import colors
 
-styles = getSampleStyleSheet()
-title_style = ParagraphStyle('Title', fontName='DejaVu-Bold', fontSize=16, ...)
-section_style = ParagraphStyle('Section', fontName='DejaVu-Bold', fontSize=12, ...)
-normal = ParagraphStyle('Normal', fontName='DejaVu', fontSize=9, ...)
+pdf_path = f"/root/Hermes-Model-Secim-{Ay}-{Yil}.pdf"
+doc = SimpleDocTemplate(pdf_path, pagesize=A4, rightMargin=1.5*cm, leftMargin=1.5*cm,
+    topMargin=1.5*cm, bottomMargin=1.5*cm)
 
-elements = []
-elements.append(Paragraph("🤖 Hermes — Model Seçimi | {Ay} {Yil}", title_style))
+title_s = ParagraphStyle('T', fontName='DejaVu-Bold', fontSize=16, ...)
+section_s = ParagraphStyle('Se', fontName='DejaVu-Bold', fontSize=12, ...)
 
-# Tablo sütunları
+e = []
+e.append(Paragraph(f"🤖 Hermes — Model Seçimi | {Ay} {Yil}", title_s))
+
+# ⭐ sütunuyla tablo
 header = ['#', 'Firma', 'Model', 'Fiyat', 'Ctx', 'LMSYS', '⭐ En İyi Olduğu Alanlar']
 data = [
-    ['1', 'Anthropic', 'Claude Sonnet 4.6', '$3/M', '1M', '1524', 'Coding, iteratif geliştirme'],
+    ['1', 'Anthropic', 'Claude Sonnet 4.6', '$3/M', '1M', '1524', 'Coding, iteratif geliştirme, karmaşık kod tabanı navigasyonu'],
+    ['3', 'OpenAI', 'GPT-5.4 Pro ★', '$5/M', '1M', '~1470', 'Yaratıcı yazarlık, multimodal, ileri düzey reasoning'],
     # ... 10 veya 12 satır
 ]
-
-col_widths = [0.6*cm, 1.8*cm, 3.2*cm, 1.5*cm, 1.2*cm, 1.3*cm, 6.2*cm]
-t = Table([header] + data, colWidths=col_widths)
+cw = [0.5*cm, 1.7*cm, 3.0*cm, 1.4*cm, 1.1*cm, 2.2*cm, 6.1*cm]
+t = Table([header]+data, colWidths=cw)
 t.setStyle(TableStyle([
-    ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#0f3460')),
-    ('TEXTCOLOR', (0,0), (-1,0), colors.white),
-    ('FONTNAME', (0,0), (-1,0), 'DejaVu-Bold'),
-    ('FONTSIZE', (0,0), (-1,0), 8),
-    ('GRID', (0,0), (-1,-1), 0.3, colors.HexColor('#c0c0c0')),
-    ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor('#f0f4ff')]),
-    # Seçili satır highlight
-    ('BACKGROUND', (0,3), (-1,3), colors.HexColor('#fff3cd')),
-    ('FONTNAME', (0,3), (-1,3), 'DejaVu-Bold'),
+    ('BACKGROUND',(0,0),(-1,0),colors.HexColor('#0f3460')),
+    ('TEXTCOLOR',(0,0),(-1,0),colors.white),
+    ('FONTNAME',(0,0),(-1,0),'DejaVu-Bold'),
+    ('GRID',(0,0),(-1,-1),0.3,colors.HexColor('#c0c0c0')),
+    ('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.white,colors.HexColor('#f0f4ff')]),
+    ('BACKGROUND',(0,3),(-1,3),colors.HexColor('#fff3cd')),  # Seçili satır
+    ('FONTNAME',(0,3),(-1,3),'DejaVu-Bold'),
 ]))
-elements.append(t)
-
-# Final tablo (yeşil kutu)
-result_data = [
-    ['🧠 ÜST AJAN', 'OpenAI', 'GPT-5.4 Pro', '$5/M', '1M', '~1470', 'Yaratıcı yazarlık, multimodal'],
-    ['⚙️ ALT AJAN', 'Google', 'Gemini 3.1 Flash', '$0.5/M', '1M', '~1400', 'Uzun bağlam, hız'],
-]
-
-doc.build(elements)
-print(f"PDF hazır: {pdf_path}")
+e.append(t)
+doc.build(e)
 ```
+
+---
+
+## 📋 Kullanım Senaryosuna Göre Hızlı Seçim
+
+| Amacınız | Bakılacak Tablolar |
+|----------|-------------------|
+| Genel "en iyi sohbet modeli" | LMArena Overall + AA Intelligence Index |
+| Kodlama agent'ı | SWE-bench Pro, LiveCodeBench, Terminal-Bench Hard |
+| Tool-calling / API | BFCL v3/v4, τ²-bench, GAIA |
+| Computer-use / browser | OSWorld, WebArena |
+| Bilim / matematik araştırma | GPQA Diamond, HLE, FrontierMath |
+| Görsel akıl yürütme | MMMU-Pro, OpenVLM Leaderboard |
+| Sesli AI | MMAU-Pro, AIR-Bench |
+| Fiyat / hız optimizasyonu | Artificial Analysis (TPS + fiyat) |
+| Güvenlik / compliance | AILuminate, TrustLLM, HarmBench |
+| Açık-ağırlıklı (self-host) | LLM-Stats Open LLM, BenchLM |
+
+---
+
+## ⚠️ Metodolojik Uyarılar (CRITICAL)
+
+1. **Saturasyon:** MMLU, HumanEval, MBPP, GSM8K, MATH-500 — frontier modellerde ayırt edici değil. Bunun yerine GPQA Diamond, HLE, FrontierMath, SWE-bench Pro, LiveCodeBench, ARC-AGI-2/3 kullan.
+2. **Veri kontaminasyonu:** Public benchmarklar zamanla eğitim verisine sızar. Live testler (LiveBench, LiveCodeBench, SWE-bench Live) daha güvenilir.
+3. **Scaffold etkisi:** Agent benchmarklarında aynı model + farklı harness arasında 5–10 puan fark olabilir. Skorları harness etiketiyle birlikte oku.
+4. **Self-reported vs. Independent:** Model üreticisinin raporladığı skor ile bağımsız ölçümler arasında ciddi farklar olabilir. Bağımsız sayıları tercih et.
+5. **Tek skor tek hikâye değildir:** Bileşik skorlar farklı ağırlıklandırmalarla yapılır. En az 3 farklı kaynak birlikte değerlendir.
+6. **HF Open LLM Leaderboard emekli (Haziran 2025):** 2026 muadilleri: LLM-Stats Open LLM, BenchLM, AA open-weight filter.
+7. **Reward-hacking:** Berkeley RDI 2026 — başlıca agent benchmarklarının manipüle edilebildiği gösterildi. Tek benchmark'a güvenme.
 
 ---
 
 ## 🚫 Önemli Kurallar
 
 1. **Sadece PDF atılır — Telegram'a mesaj yazılmaz** (aksi belirtilmedikçe)
-2. **Türkçe karakterler için DejaVu font kullanılır** —aksi halde çıkmaz
+2. **Türkçe karakterler için DejaVu font kullanılır** — aksi halde çıkmaz
 3. **Her firma max 2 model** — ayrık seçim (disjoint set)
 4. **Ücretsiz modeller pas geçilir** — güvenilirlik endişesi
 5. **Memory güncellenir** — seçilen model kombinasyonu kaydedilir
+6. **Skill otomatik GitHub'a push edilir** — bilgi-ve-projeler/Skills/birkan-model-secim/
 
 ---
 
@@ -224,9 +313,11 @@ Model seçim {Ay} {Yil}: ÜST={Model}, ALT={Model}. Her ay başı güncellenir.
 ## 🔗 İlgili Skills
 
 - `ai-skill-pipeline` — Genel bilgi işleme pipeline
-- `birkan-ai-model-scout` — Model benchmark bilgileri
+- `birkan-ai-model-scout` — Model benchmark bilgileri (güncellenmiş)
 - `hermes-agent` — Hermes konfigürasyonu
+- `uncensored-model-router` — Sansür swap
 
 ---
 
-*Bu skill Birkan'ın model seçim sürecini 2 saatlik araştırmayı ~5 dakikaya indirir.*
+*Bu skill Birkan'ın model seçim sürecini ~5 dakikaya indirir. 40+ benchmark sitesi, 8 kategori, tam metodoloji dahil.*
+*Kaynak: Birkan'ın sağladığı 2026 LLM Karşılaştırma Rehberi | benchmark siteleri derlemesi*
