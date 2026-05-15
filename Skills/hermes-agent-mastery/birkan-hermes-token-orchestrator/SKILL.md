@@ -119,6 +119,33 @@ Kullanım:
 - Kritik kod değişikliği.
 - Çelişkili kaynakları uzlaştırma.
 
+### ÜST Danışma Konseyi — zorlanınca tek başına inat etme
+
+Ana ÜST model bir problemde zorlanırsa, çözümden emin değilse veya iki iyi seçenek arasında kalırsa diğer ÜST modellere kısa danışma yapılır.
+
+Tetikleyiciler:
+- Aynı hata 2 kez tekrar ederse.
+- Mimari karar yüksek riskliyse.
+- Güvenlik / para / veri kaybı riski varsa.
+- Çelişkili benchmark veya kaynak varsa.
+- Kullanıcı “emin misin?”, “başka modele sor”, “zorlanıyorsan danış” derse.
+
+Danışma sırası:
+1. Ana model: `openai/gpt-5.5`
+2. Danışman 1: `anthropic/claude-opus-4.6`
+3. Danışman 2: `deepseek/deepseek-v4-pro`
+4. Acil / tie-breaker: `anthropic/claude-opus-4.7`
+
+Nasıl yapılır:
+- Danışman modellere tüm sohbeti gönderme.
+- Sadece sıkıştırılmış problem paketi ver:
+  - amaç
+  - hata / seçenekler
+  - ilgili kod/veri özeti
+  - karar kriterleri
+- Her danışmandan max 5 madde görüş al.
+- Final kararı ana model verir ve kullanıcıya “danışma sonucu” kısa özetler.
+
 ### Routing pseudo-code
 
 ```text
