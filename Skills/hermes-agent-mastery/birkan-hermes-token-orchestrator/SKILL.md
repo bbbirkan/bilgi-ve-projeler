@@ -119,9 +119,14 @@ Kullanım:
 - Kritik kod değişikliği.
 - Çelişkili kaynakları uzlaştırma.
 
-### ÜST Danışma Konseyi — zorlanınca tek başına inat etme
+### ÜST Danışma Konseyi — gerçekçi uygulama
 
-Ana ÜST model bir problemde zorlanırsa, çözümden emin değilse veya iki iyi seçenek arasında kalırsa diğer ÜST modellere kısa danışma yapılır.
+Gerçek API testinde görüldü: Her model Hermes gibi güvenilir tool-call yapmıyor. Bu yüzden danışman modeller **tool-agent değil, text-only danışman panel** olarak kullanılır.
+
+Ana prensip:
+- Danışman modeller sadece kısa görüş verir.
+- Tool çağırma / dosya okuma / terminal / web / patch işlemlerini Hermes ana executor yapar.
+- Danışmanların çıktısı karar desteğidir; eylem yetkisi yoktur.
 
 Tetikleyiciler:
 - Aynı hata 2 kez tekrar ederse.
@@ -137,14 +142,27 @@ Danışma sırası:
 4. Acil / tie-breaker: `anthropic/claude-opus-4.7`
 
 Nasıl yapılır:
-- Danışman modellere tüm sohbeti gönderme.
-- Sadece sıkıştırılmış problem paketi ver:
+- Danışman modellere tüm sohbet gönderilmez.
+- Sadece sıkıştırılmış problem paketi verilir:
   - amaç
   - hata / seçenekler
   - ilgili kod/veri özeti
   - karar kriterleri
-- Her danışmandan max 5 madde görüş al.
-- Final kararı ana model verir ve kullanıcıya “danışma sonucu” kısa özetler.
+- Her danışmandan max 5 madde görüş alınır.
+- Final kararı ana Hermes executor verir.
+- Kullanıcıya “danışma sonucu” kısa özetlenir.
+
+Çalışan script:
+- `/root/.hermes/scripts/model_council.py`
+
+Örnek:
+```bash
+python3 /root/.hermes/scripts/model_council.py --mode upper --question "Problem paketini buraya yaz"
+```
+
+Test sonucu:
+- GPT-5.5, Claude Opus 4.6, DeepSeek V4 Pro, Claude Opus 4.7 text-only danışman olarak başarılı yanıt verdi.
+- Tool-call bazı modellerde güvenilir değil; bu nedenle tool execution merkezi Hermes'te kalır.
 
 ### Routing pseudo-code
 
