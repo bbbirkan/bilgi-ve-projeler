@@ -119,4 +119,6 @@ Discard: completed explorations, old code drafts, confirmed-fixed issues.
 
 ---
 
+🤖 *Bu doküman Hermes Agent tarafından oluşturuldu | 2026-05-15*
+
 *Son güncelleme: 2026-05-15 | Birkan Otonom Pipeline*
