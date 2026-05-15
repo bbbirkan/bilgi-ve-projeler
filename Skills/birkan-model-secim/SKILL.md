@@ -10,7 +10,7 @@ trigger:
   - "benchmark"
 ---
 
-# 🤖 Birkan Model Seçim Skill'i (v2)
+# 🤖 Birkan Model Seçim Skill'i (v3)
 
 Bu skill, Birkan'ın her ay başı talep ettiği AI model seçim sürecini tam otomasyonla çalıştırır. Sadece PDF oluşturur ve atar — Telegram'a mesaj yazmaz.
 
@@ -51,6 +51,22 @@ Bu skill, Birkan'ın her ay başı talep ettiği AI model seçim sürecini tam o
 
 ---
 
+## ⚠️ PITFALLS
+
+### ⚠️ Kafadan sallama KABUL EDİLMEZ
+- **Hata:** Model seçimleri memory'den yapıldı. Kullanıcı çok kızdı: "kafadan sallıyorsun".
+- **Doğru yöntem:** Tablo oluşturmadan ÖNCE LMSYS Arena, OpenRouter ve Artificial Analysis'dan gerçek veriler çekilir. Hafızadan/sezgisel veri çekilmez.
+
+### ⚠️ ⭐ sütunu boş bırakılmamalı
+- **Hata:** İlk tablolarda en iyi olduğu alanlar belirtilmedi. "Anlaşılmıyor" geldi.
+- **Doğru yöntem:** Her model için virgülle ayrılmış 2-3 "en iyi olduğu alan" yazılır.
+
+### ⚠️ Telegram'a sadece PDF at
+- Mesaj yazılmaz — kullanıcı net istedi.
+
+---
+
+## 📁 Çıktı Tablo Formatı
 ## 📁 Çıktı Tablo Formatı
 
 Her model için şu sütunlar olur:
@@ -64,14 +80,28 @@ Her model için şu sütunlar olur:
 
 ---
 
-## 🔧 40+ Veri Kaynağı (Tam Liste)
+## 🔧 40+ Veri Kaynağı (Tam Liste — Gerçek Doğrulanmış Veriler)
+
+> ⚠️ BİRİAN'IN KRİTER LİSTESİ: Kullanıcı AI'lara kriter listesi verir, AI'lar verileri çekip Türkçe rapor hazırlar. Birkan raporu bana verir, ben PDF'e dökerim. Bu sayede veriler kafadan değil, gerçek benchmark sitelerinden çekilmiş olur.
+
+### Yöntem: AI'ya Verilecek Kriter Prompt'u
+
+```
+Aşağıdaki 40+ benchmark sitesinden ve OpenRouter API'den gerçek verileri çekerek TÜRKÇE bir rapor hazırla.
+
+ÜST AJAN (15 model) + ALT AJAN (20 model) = 35 model
+Her model için: Fiyat, Context, LMSYS ELO, LiveBench, SWE-bench, En iyi olduğu alanlar
+
+Kaynaklar: lmarena.ai, openrouter.ai, livebench.ai, swebench.com, artificialanalysis.ai
+Şartlar: Ücretli modeller, max 2/firma, ayrık listeler
+```
 
 ### 1. Genel (Çok-Yetenekli) Liderlik Tabloları
 
 | # | Site | URL | Odak |
 |---|------|-----|------|
 | 1 | **LMArena** | lmarena.ai | İnsan tercihi (Elo) — altın standart |
-| 2 | **Artificial Analysis** | artificialanalysis.ai | Intelligence Index + fiyat/hız |
+| 2 | **Artificial Analysis** | artificialanalysis.ai | Intelligence Index v4.0 + fiyat/hız |
 | 3 | **LiveBench** | livebench.ai | Kirlenme-dirençli akademik |
 | 4 | **Vellum** | vellum.ai/llm-leaderboard | Frontier tek-sayfa karşılaştırma |
 | 5 | **LLM-Stats** | llm-stats.com | Bileşik skor (300+ model) |
@@ -320,4 +350,10 @@ Model seçim {Ay} {Yil}: ÜST={Model}, ALT={Model}. Her ay başı güncellenir.
 ---
 
 *Bu skill Birkan'ın model seçim sürecini ~5 dakikaya indirir. 40+ benchmark sitesi, 8 kategori, tam metodoloji dahil.*
-*Kaynak: Birkan'ın sağladığı 2026 LLM Karşılaştırma Rehberi | benchmark siteleri derlemesi*
+*Kaynak: Birkan'ın sağladığı 2026 LLM Karşılaştırma Rehberi | 40+ benchmark sitesi derlemesi*
+
+---
+
+## 📎 References (references/)
+
+- `references/benchmark-siteleri.md` — 40+ benchmark sitesi tam liste, URL'ler, odak alanları, metodoloji özetleri. Bu dosya oturumda Birkan'ın verdiği benchmark rehberinden derlenmiştir. Her ay model seçimi yapılacağında bu dosyaya başvurularak gerçek veriler çekilir.
