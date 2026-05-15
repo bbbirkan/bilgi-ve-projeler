@@ -81,12 +81,19 @@ Neden:
 - İyi genel worker.
 - Kod/prototip/özet/araştırma dengesi iyi.
 - Delegation default modeli olarak kullanılır.
+- Gerçek debug sonucu: GLM-4.7 bozuk değil; fazla reasoning token üretirse görünen content boş kalabilir.
 
 Kullanım:
 - Standart subagent işleri.
 - 5-20 kaynak web araştırması.
 - Kod dosyası inceleme.
 - Wiki sayfası taslağı.
+
+GLM çağırma notu:
+- `reasoning: {effort: "low"}` kullan.
+- `max_tokens` düşük verme; en az 1200 kullan.
+- GLM-4.7 Flash ile karıştırma; Flash sürümünde content boş kalma riski daha yüksek.
+- Tool-call testi başarılı: `report_status` fonksiyon çağrısını doğru yaptı.
 
 ### Hızlı ve ucuz özet / multimodal uyum
 **Birinci tercih:** `google/gemini-3-flash-preview`

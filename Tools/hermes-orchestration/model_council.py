@@ -58,49 +58,68 @@ def load_env():
             os.environ.setdefault(k, v.strip().strip('"').strip("'"))
 
 
-def call_model(model_id: str, question: str, timeout: int = 90) -> dict:
+def call_model(model_id: str, question: str, timeout: int = 90, retry: int = 1) -> dict:
     key = os.environ.get("OPENROUTER_API_KEY")
     if not key:
         return {"ok": False, "error": "OPENROUTER_API_KEY yok"}
 
-    system = (
-        "Sen Birkan'ın Hermes orkestrasyon sisteminde kısa danışman modelsin. "
-        "Tool kullanma. Türkçe yaz. En fazla 5 madde ver. "
-        "Belirsizlik varsa açıkça söyle. Uydurma veri yazma."
-    )
-    payload = {
-        "model": model_id,
-        "messages": [
-            {"role": "system", "content": system},
-            {"role": "user", "content": question},
-        ],
-        "temperature": 0.2,
-        "max_tokens": 700,
-    }
-    req = urllib.request.Request(
-        OPENROUTER_URL,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Authorization": f"Bearer {key}",
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://hermes-agent.local",
-            "X-Title": "Birkan Hermes Model Council",
-        },
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            body = json.loads(r.read().decode("utf-8", "ignore"))
-        msg = (body.get("choices") or [{}])[0].get("message") or {}
-        text = (msg.get("content") or "").strip()
-        if not text:
-            return {"ok": False, "error": "Boş cevap", "raw": str(body)[:500]}
-        return {"ok": True, "text": text}
-    except urllib.error.HTTPError as e:
-        err = e.read().decode("utf-8", "ignore")[:800]
-        return {"ok": False, "http": e.code, "error": err}
-    except Exception as e:
-        return {"ok": False, "error": repr(e)}
+    prompts = [
+        (
+            "Sen Birkan'ın Hermes orkestrasyon sisteminde kısa danışman modelsin. "
+            "Tool kullanma. Türkçe yaz. En fazla 5 madde ver. "
+            "Belirsizlik varsa açıkça söyle. Uydurma veri yazma."
+        ),
+        (
+            "Kısa Türkçe danışman cevabı ver. Tool kullanma. "
+            "En fazla 5 madde. Boş cevap verme."
+        ),
+    ]
+
+    last_error = None
+    attempts = max(1, retry + 1)
+    for attempt in range(attempts):
+        system = prompts[min(attempt, len(prompts) - 1)]
+        payload = {
+            "model": model_id,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": question},
+            ],
+            "temperature": 0.2,
+            "max_tokens": 1200 if "glm-4.7" in model_id else (900 if attempt else 700),
+        }
+        # GLM-4.7 çok reasoning token üretebiliyor; low reasoning content'in boş kalmasını engelliyor.
+        if "glm-4.7" in model_id:
+            payload["reasoning"] = {"effort": "low"}
+        req = urllib.request.Request(
+            OPENROUTER_URL,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {key}",
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://hermes-agent.local",
+                "X-Title": "Birkan Hermes Model Council",
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                body = json.loads(r.read().decode("utf-8", "ignore"))
+            msg = (body.get("choices") or [{}])[0].get("message") or {}
+            text = (msg.get("content") or "").strip()
+            if text:
+                return {"ok": True, "text": text, "attempt": attempt + 1}
+            last_error = {"error": "Boş cevap", "raw": str(body)[:500]}
+        except urllib.error.HTTPError as e:
+            err = e.read().decode("utf-8", "ignore")[:800]
+            last_error = {"http": e.code, "error": err}
+        except Exception as e:
+            last_error = {"error": repr(e)}
+        time.sleep(0.5)
+
+    out = {"ok": False}
+    out.update(last_error or {"error": "Bilinmeyen hata"})
+    return out
 
 
 def select_models(mode: str):
