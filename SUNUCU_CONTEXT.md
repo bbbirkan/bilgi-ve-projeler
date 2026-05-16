@@ -215,6 +215,77 @@ Bu sistemde ajanlar arası iletişim için hybrid swarm protokol hedefleniyor:
 
 ---
 
+## GIT / GITHUB — NASIL ÇALIŞIR
+
+### Altın Kural: HTTPS değil, SSH kullan
+
+Bu sunucuda GitHub'a erişimin **tek güvenilir yolu SSH**'tır.
+HTTPS tokenları (`.git-credentials`, `.hermes/.env`'daki `GITHUB_TOKEN`) ya süresi dolmuş ya da
+sadece belirli repolar için yetkili (fine-grained PAT) olduğundan yeni repolarda **403** verir.
+
+### SSH Key
+
+```
+~/.ssh/trade_push        ← GitHub'a bağlanan tek yetkili key
+~/.ssh/trade_push.pub    ← bbbirkan hesabına kayıtlı
+```
+
+### Her Oturumda SSH Agent'ı Başlat
+
+SSH agent oturum başında ölüyor. Git push yapmadan önce mutlaka çalıştır:
+
+```bash
+eval $(ssh-agent -s)
+ssh-add ~/.ssh/trade_push
+ssh -T git@github.com     # "Hi bbbirkan!" görünmeli
+```
+
+### Yeni Repo Oluşturma
+
+GitHub API'ye `.git-credentials`'daki token ile repo oluşturmak **çalışıyor**
+(API çağrısı için yeterli, push için yeterli değil):
+
+```bash
+GIT_TOKEN=$(grep 'github.com' /root/.git-credentials | sed 's/.*://' | sed 's/@github.com//')
+
+curl -s -X POST \
+  -H "Authorization: token $GIT_TOKEN" \
+  -H "Accept: application/vnd.github+json" \
+  https://api.github.com/user/repos \
+  -d '{"name":"REPO_ADI","description":"...","private":false}'
+```
+
+### Yeni Repo'ya Push
+
+Remote'u her zaman SSH formatında kur:
+
+```bash
+eval $(ssh-agent -s) && ssh-add ~/.ssh/trade_push
+
+git remote add origin git@github.com:bbbirkan/REPO_ADI.git
+# veya mevcut HTTPS remote'u değiştir:
+git remote set-url origin git@github.com:bbbirkan/REPO_ADI.git
+
+GIT_SSH_COMMAND="ssh -i /root/.ssh/trade_push -o StrictHostKeyChecking=no" \
+git push -u origin main
+```
+
+### Mevcut Repolar (çalışan SSH remote'lar)
+
+| Repo | Remote |
+|------|--------|
+| `2026-kermes` | `git@github.com:bbbirkan/2026-kermes.git` |
+| `bilgi-ve-projeler` | HTTPS (credential store ile çalışıyor) |
+| `2026-hermes-trello-agent` | HTTPS |
+| `2026-hermes-mobile-app` | HTTPS |
+
+### gh CLI Durumu
+
+`gh` CLI kimlik doğrulaması yapılmamış — `gh auth login` henüz çalıştırılmadı.
+Kullanmak istersen önce `! gh auth login` yap (tarayıcı ile OAuth akışı).
+
+---
+
 ## ÇALIŞIRKEN DİKKAT EDİLECEKLER
 
 1. **Hermes config'i bozmama** — `/usr/local/lib/hermes-agent/` altındaki dosyaları dikkatlice düzenle
