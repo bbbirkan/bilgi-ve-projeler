@@ -18,29 +18,45 @@ tags: [video, youtube, transcript, whisper, ffmpeg, yt-dlp, vision, frame-analys
 
 ---
 
-## Pipeline Mimarisi
+## 3 Bağımsız Mod — Ne Zaman Hangisi?
+
+### Mod Seçim Kuralı
 
 ```
-Gelen URL/dosya
-      │
-      ▼
-[1. ÇEK] ─── Başarılı → Transkript var, analiz et, dur
-      │ Başarısız
-      ▼
-[2. DİNLE] ── Başarılı → Transkript var, analiz et, dur
-      │ Başarısız
-      ▼
-[3. İZLE] ─── Zor konu / görsel içerik → Frame + transkript
-      │ Her şey başarısız
-      ▼
-[4. SOR] ──── Kullanıcıya bildir, seçenek sun
+Kullanıcı "izle / iyi anla / derinlemesine analiz et" dedi?
+  → İZLE modunu kullan (görsel bağlam kritik)
+
+İçerik görsel mi? (demo, grafik, kod ekranı, sunum slaytı)
+  → Sen karar ver: İZLE moduna geç, "izliyorum" de
+
+Standart bilgi sorusu, özet, transkript yeterli mi?
+  → ÇEK → başarısız → DİNLE
+
+Her şey başarısız?
+  → SOR
 ```
 
-**Her adımda kullanıcıya kısaca ne yaptığını söyle:**
-- "Transkripti çektim ✓"
+**Her modda kullanıcıya söyle:**
+- "Transkripti çektim ✓" 
 - "Ses indirip Whisper ile dinledim ✓"
-- "Frame analizi yapıyorum, biraz token harcayacak..."
+- "İzliyorum — frame analizi yapıyorum, biraz token harcayacak..."
 - "Erişemedim, şunları deneyebilirsin..."
+
+---
+
+### Modların Avantajları
+
+| Mod | Hız | Maliyet | Ne Kazandırır |
+|-----|-----|---------|---------------|
+| **ÇEK** | Saniyeler | Sıfır | Metin bilgisi, hızlı özet |
+| **DİNLE** | 1-3dk | Düşük (Groq) | Konuşma nüansı, ton, vurgu |
+| **İZLE** | 3-10dk | Orta (token) | Görsel bağlam, grafik, demo, jest/mimik, kod ekranı |
+
+**İZLE modunun eşsiz avantajları:**
+- Transkriptte olmayan bilgiler: grafik trendi, kod ekranı, sunum slaytı, ürün demosu
+- Konuşmacının jest/mimik/vurgusu → duygusal ton analizi
+- Görsel karşılaştırma: "bu grafikte X artıyor ama transkriptte bahsedilmiyor"
+- Teknik demolar: ekranda ne yapıldığını kelimeler anlatmaz
 
 ---
 
@@ -173,18 +189,14 @@ Seçeneklerin:
 
 ---
 
-## Karar Ağacı — Ne Zaman İzlenir?
+## İZLE Moduna Kendi Kararınla Geçme Kriterleri
 
-```
-Birkan "izle" dedi mi?
-  → Evet: Kademe 3'e git
-  → Hayır: Çek/Dinle yeterli mi?
-      → Evet: Orada dur
-      → Hayır (görsel konu, demo, grafik):
-          → "Frame analizi yapıyorum, token harcayacak" de → Kademe 3
-```
+Kullanıcı söylemese bile izle:
+- İçerik görsel demo veya ekran kaydı ise
+- Transkript aldın ama anlamak için "görmek" gerekiyorsa
+- "Daha iyi anla / derinlemesine analiz et" gibi istekler
 
-Transkript başarıyla alındıysa ve konu metin anlaşılabiliriyse **asla** Kademe 3'e geçme.
+Transkript yeterliyse **asla** izleme — token harca, zaman harca demek.
 
 ---
 
