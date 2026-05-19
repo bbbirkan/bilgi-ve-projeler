@@ -143,6 +143,7 @@ Telegram, Discord, Slack, WhatsApp, Signal, Matrix ve daha fazlası
 | 8003 | yt-harvester | `/root/youtube-transcript-engine` |
 | 8004 | medium-reader | `/root/2026-medium-reader` |
 | 8005 | trello-agent | `/root/2026-hermes-trello-agent` |
+| 8006 | orchester | `/root/2026-orchester` |
 
 ---
 
@@ -251,6 +252,41 @@ MEDIUM_UID=...
 **Araç:** n8n workflow'ları (`/root/daily_strategy_v2.json`)
 **Durum:** Workflow yapısı mevcut, veri kaynakları bağlı değil.
 **Amaç:** Sabah 07:00 cron ile piyasa verisi → AI analiz → strateji raporu → Telegram
+
+---
+
+### Proje O — Orchester ✅ ÇALIŞIYOR
+**Repo:** `github.com/bbbirkan/2026-orchester`
+**Dizin:** `/root/2026-orchester`
+**Port:** 8006
+
+**Amaç:** 3 farklı AI modeli aynı soruya cevap verir, birbirlerini görüp revize eder, hakem sentez yapar.
+
+**Akış:**
+```
+Soru → Claude + Gemini + GLM-4.7 (paralel, Tur 1)
+     → Herkes diğerlerini görür, revize eder (Tur 2)
+     → Hakem (Claude) final sentez üretir
+     → debates/TIMESTAMP.md olarak kaydedilir
+```
+
+**Kullanım:**
+```bash
+# CLI:
+OPENROUTER_API_KEY=... python3 orchester.py "Sorum ne?"
+python3 orchester.py --rounds 1 "Hızlı soru"
+
+# API (port 8006):
+uvicorn main:app --port 8006
+curl -X POST http://localhost:8006/debate -d '{"task":"Sorum","rounds":2}'
+curl http://localhost:8006/result
+curl http://localhost:8006/debates   # geçmiş tartışmalar
+```
+
+**Modeller:**
+- `anthropic/claude-sonnet-4-5` (OpenRouter)
+- `google/gemini-2.5-flash` (OpenRouter)
+- `z-ai/glm-4.7` (OpenRouter)
 
 ---
 
