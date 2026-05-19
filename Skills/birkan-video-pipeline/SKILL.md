@@ -48,13 +48,14 @@ Her şey başarısız?
 
 | Mod | Hız | Maliyet | Ne Kazandırır |
 |-----|-----|---------|---------------|
-| **ÇEK** | Saniyeler | Sıfır | Metin bilgisi, hızlı özet |
-| **DİNLE** | 1-3dk | Düşük (Groq) | Konuşma nüansı, ton, vurgu |
-| **İZLE** | 3-10dk | Orta (token) | Görsel bağlam, grafik, demo, jest/mimik, kod ekranı |
+| **ÇEK** | Saniyeler | Sıfır | Altyazı/transkript varsa anında al |
+| **DİNLE** | 1-3dk | Düşük (Groq) | Altyazı yoksa sesi Whisper ile metne çevir — çıktı yine düz metin |
+| **İZLE** | 3-10dk | Orta (token) | Görsel bağlam, grafik, demo, kod ekranı, slayt |
+
+**Not:** DİNLE, ÇEK'in fallback'idir — altyazı bulamazsan sesi metne çevirirsin. Ton/vurgu/duygu bilgisi Whisper'da kaybolur, çıktı düz metin olur. Gerçek anlama avantajı sadece **İZLE**'dedir.
 
 **İZLE modunun eşsiz avantajları:**
 - Transkriptte olmayan bilgiler: grafik trendi, kod ekranı, sunum slaytı, ürün demosu
-- Konuşmacının jest/mimik/vurgusu → duygusal ton analizi
 - Görsel karşılaştırma: "bu grafikte X artıyor ama transkriptte bahsedilmiyor"
 - Teknik demolar: ekranda ne yapıldığını kelimeler anlatmaz
 
