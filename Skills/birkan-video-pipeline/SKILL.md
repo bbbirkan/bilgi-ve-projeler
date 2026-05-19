@@ -61,40 +61,60 @@ Her şey başarısız?
 
 ---
 
-## Kademe 1 — ÇEK (Hızlı, Ücretsiz)
+## Mod A — ÇEK → DİNLE (Boru Hattı)
 
-Hedef: Transkript veya altyazı dosyası al.
+### A1 — ÇEK: Deneme 1 (Standart)
 
 ```bash
-# Önce YouTube altyazısı (ücretsiz, anında)
 yt-dlp --write-auto-sub --write-sub --sub-lang tr,en \
   --skip-download -o /tmp/video_%(id)s VIDEO_URL
 
-# Altyazı dosyası oluştu mu?
 ls /tmp/video_*.vtt /tmp/video_*.srt 2>/dev/null
 ```
 
-**Spam/bot korumasına düşerse — sırayla dene:**
+Altyazı dosyası bulunduysa → analiz et, **dur**.
+
+### A2 — ÇEK: Deneme 2 (Bot koruması varsa)
 
 ```bash
-# Deneme 1: Android client (bot tespitini atlar)
+# Android client ile dene
 yt-dlp --extractor-args "youtube:player_client=android" \
   --write-auto-sub --skip-download -o /tmp/video_%(id)s VIDEO_URL
 
-# Deneme 2: cookies (tarayıcı oturumu taklit)
+# Hala yok? Cookies ile dene
 yt-dlp --cookies-from-browser chrome \
   --write-auto-sub --skip-download -o /tmp/video_%(id)s VIDEO_URL
 
-# Deneme 3: jina.ai metin çıkarıcı (metadata + açıklama, transcript değil)
+# Hala yok? jina.ai (metadata + açıklama, tam transkript değil)
 curl -sL "https://r.jina.ai/VIDEO_URL" -A "Mozilla/5.0" | head -200
-
-# Deneme 4: YouTube timedtext API (bazen doğrudan çalışır)
-VIDEO_ID=$(echo VIDEO_URL | grep -oP '(?<=v=)[^&]+')
-curl -sL "https://www.youtube.com/api/timedtext?v=${VIDEO_ID}&lang=tr&fmt=json3"
-curl -sL "https://www.youtube.com/api/timedtext?v=${VIDEO_ID}&lang=en&fmt=json3"
 ```
 
-**3 denemeden sonra hala başarısız → Kademe 2'ye geç.**
+Altyazı bulunduysa → analiz et, **dur**.
+İkinci denemeden sonra da yok → **DİNLE'ye geç**.
+
+### A3 — DİNLE: Whisper Fallback
+
+```bash
+# Ses indir
+yt-dlp -x --audio-format mp3 --audio-quality 0 \
+  -o /tmp/video_%(id)s.%(ext)s VIDEO_URL
+
+# Groq Whisper ile metne çevir
+curl -s https://api.groq.com/openai/v1/audio/transcriptions \
+  -H "Authorization: Bearer $GROQ_API_KEY" \
+  -F "file=@/tmp/video_ID.mp3" \
+  -F "model=whisper-large-v3" \
+  -F "language=tr" | python3 -c "import sys,json; print(json.load(sys.stdin)['text'])"
+```
+
+**25MB üzeri ses:**
+```bash
+ffmpeg -i /tmp/video_ID.mp3 -f segment -segment_time 600 \
+  -c copy /tmp/video_part_%03d.mp3
+# Her parçayı ayrı Whisper'a gönder, birleştir
+```
+
+DİNLE de başarısız → **SOR**.
 
 ---
 
