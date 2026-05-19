@@ -255,25 +255,36 @@ MEDIUM_UID=...
 
 ---
 
-### Proje O — Orchester ✅ TAM ÇALIŞIYOR (2026-05-19)
+### Proje O — Orchester ✅ TAM ÇALIŞIYOR (2026-05-19 v0.2)
 **Repo:** `github.com/bbbirkan/2026-orchester`
 **Dizin:** `/root/2026-orchester`
 **Port:** 8006
 **Servis:** `orchester.service` (systemd, boot'ta otomatik başlar)
 
-**Amaç:** API key yok, sadece subscription. 3 CLI (Claude Code + Google Gemini + OpenCode/DeepSeek)
-aynı soruyu paralel/chain/sequential modda işler, sentez üretir.
+**Amaç:** API key yok, sadece subscription. 3 farklı AI CLI soruyu sınıflandırıp akıllıca yönlendirir.
 
-**Gerçek akış (Terminal Orchester — subscription-only):**
+**İki sistem var:**
+- `terminal_orchester.py` — 3 farklı CLI (Claude + OpenCode + Gemini), smart routing
+- `orchester.py` — Claude-only, 3 persona (Analist/Eleştirmen/Pragmatist), tartışma formatı
+
+**Smart mod akışı (varsayılan, v0.2):**
 ```
-Telegram → Hermes Gateway → localhost:8006/v1 → terminal_orchester.py
-         → [Claude CLI + OpenCode CLI paralel]
-         → Gemini CLI sentezi
+Telegram → Hermes → localhost:8006/v1 → classify(Claude)
+         → basit: Claude tek (~10sn)
+         → orta:  Claude + OpenCode paralel, Claude sentezler (~35sn)
+         → zor:   3 CLI konsey, max 3 tur, Claude hakem (~60-90sn)
          → SSE stream → Telegram yanıtı
          → debates/TIMESTAMP.md olarak kaydedilir
 ```
 
-**Hermes entegrasyonu (~/.hermes/config.yaml):**
+**Test sonuçları (2026-05-19):**
+| Soru | Seviye | Süre | Not |
+|------|--------|------|-----|
+| "nasılsın" | basit | 11sn | "İyiyim, teşekkürler!" |
+| async vs threading | orta | 36sn | Tablo + karar ağacı |
+| AI orkestrasyon mimarisi | zor | 54sn | Tur 1'de uzlaşma |
+
+**Hermes entegrasyonu (~/.hermes/config.yaml) — kritik ayarlar:**
 ```yaml
 model:
   default: terminal-orchester
@@ -283,36 +294,28 @@ custom_providers:
     base_url: http://localhost:8006/v1
     api_mode: chat_completions
 agent:
-  max_turns: 1          # loop önleme — kritik
-toolsets: []            # hermes-cli toolset'i kapat — kritik
+  max_turns: 1      # loop önleme — kritik
+toolsets: []        # agentic loop önleme — kritik
 platform_toolsets:
-  cli: []               # agentic loop önleme — kritik
+  cli: []           # agentic loop önleme — kritik
   telegram:
   - hermes-telegram
 ```
 
-**Teknik detaylar (öğrenildi):**
-- Hermes tüm custom provider isteklerinde `stream: true` gönderir → SSE zorunlu
-- Orchestration 45-90sn sürer → keepalive SSE (`": keepalive\n\n"`) her 5sn gönderilmeli
-- Loop tespiti: messages içinde assistant varsa son yanıtı geri döndür, yeniden çalıştırma
-- `CLAUDE_CODE_BUBBLEWRAP=1` env gerekli (root olarak çalıştırmak için)
-- Gemini timeout: 180sn (120sn yetersizdi)
+**Teknik notlar:**
+- Hermes her zaman `stream: true` gönderir → SSE zorunlu
+- Keepalive SSE (`: keepalive\n\n`) her 5sn → 90sn'lik işlemlerde bağlantıyı korur
+- Loop tespiti: messages'da assistant varsa son yanıtı geri döndür
+- `CLAUDE_CODE_BUBBLEWRAP=1` env zorunlu (root'ta çalıştırmak için)
+- Gemini timeout: 180sn (120sn yetersiz kalıyordu)
 
 **Servis yönetimi:**
 ```bash
 systemctl status orchester.service
 journalctl -u orchester -f
 systemctl restart orchester.service
+hermes -z "Test sorusu"   # tam chain testi
 ```
-
-**CLI test:**
-```bash
-hermes -z "Test sorusu"   # tam chain'i test eder, ~60-90sn sürer
-curl http://localhost:8006/health
-```
-
-**Bilinen sorun:** Basit selamlamalar ("nasılsın") için de 3 CLI çalışır — orantısız.
-Çözüm: routing katmanı eklenecek (kısa mesaj → sadece Claude).
 
 **Modeller (subscription, API key yok):**
 - Claude Code CLI → Anthropic Pro subscription
