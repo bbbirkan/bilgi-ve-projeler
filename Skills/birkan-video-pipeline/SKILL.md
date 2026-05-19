@@ -1,0 +1,212 @@
+---
+name: birkan-video-pipeline
+description: |
+  3 kademeli akıllı video anlama pipeline'ı — ÇEK → DİNLE → İZLE.
+  YouTube, TikTok, Instagram, Loom, lokal MP4 desteklenir.
+  Her kademe başarısız olunca bir sonrakine geçer, kullanıcıya ne yaptığını söyler.
+  Görsel frame analizi (İZLE) sadece içerik gerektiriyorsa ve token harcandığında kullanıcıya bildirilir.
+tags: [video, youtube, transcript, whisper, ffmpeg, yt-dlp, vision, frame-analysis]
+---
+
+# 🎬 Video Pipeline Skill — Çek → Dinle → İzle
+
+## Ne Zaman Kullanılır (Trigger)
+- "Bu videoyu izle / analiz et / özetle" + URL
+- YouTube, TikTok, Instagram, Vimeo, Loom, X linki verildiğinde
+- Lokal `.mp4 / .mov / .mkv` analiz edilecekse
+- Birkan özellikle belirtmediği sürece en hafif kademeyle başla
+
+---
+
+## Pipeline Mimarisi
+
+```
+Gelen URL/dosya
+      │
+      ▼
+[1. ÇEK] ─── Başarılı → Transkript var, analiz et, dur
+      │ Başarısız
+      ▼
+[2. DİNLE] ── Başarılı → Transkript var, analiz et, dur
+      │ Başarısız
+      ▼
+[3. İZLE] ─── Zor konu / görsel içerik → Frame + transkript
+      │ Her şey başarısız
+      ▼
+[4. SOR] ──── Kullanıcıya bildir, seçenek sun
+```
+
+**Her adımda kullanıcıya kısaca ne yaptığını söyle:**
+- "Transkripti çektim ✓"
+- "Ses indirip Whisper ile dinledim ✓"
+- "Frame analizi yapıyorum, biraz token harcayacak..."
+- "Erişemedim, şunları deneyebilirsin..."
+
+---
+
+## Kademe 1 — ÇEK (Hızlı, Ücretsiz)
+
+Hedef: Transkript veya altyazı dosyası al.
+
+```bash
+# Önce YouTube altyazısı (ücretsiz, anında)
+yt-dlp --write-auto-sub --write-sub --sub-lang tr,en \
+  --skip-download -o /tmp/video_%(id)s VIDEO_URL
+
+# Altyazı dosyası oluştu mu?
+ls /tmp/video_*.vtt /tmp/video_*.srt 2>/dev/null
+```
+
+**Spam/bot korumasına düşerse — sırayla dene:**
+
+```bash
+# Deneme 1: Android client (bot tespitini atlar)
+yt-dlp --extractor-args "youtube:player_client=android" \
+  --write-auto-sub --skip-download -o /tmp/video_%(id)s VIDEO_URL
+
+# Deneme 2: cookies (tarayıcı oturumu taklit)
+yt-dlp --cookies-from-browser chrome \
+  --write-auto-sub --skip-download -o /tmp/video_%(id)s VIDEO_URL
+
+# Deneme 3: jina.ai metin çıkarıcı (metadata + açıklama, transcript değil)
+curl -sL "https://r.jina.ai/VIDEO_URL" -A "Mozilla/5.0" | head -200
+
+# Deneme 4: YouTube timedtext API (bazen doğrudan çalışır)
+VIDEO_ID=$(echo VIDEO_URL | grep -oP '(?<=v=)[^&]+')
+curl -sL "https://www.youtube.com/api/timedtext?v=${VIDEO_ID}&lang=tr&fmt=json3"
+curl -sL "https://www.youtube.com/api/timedtext?v=${VIDEO_ID}&lang=en&fmt=json3"
+```
+
+**3 denemeden sonra hala başarısız → Kademe 2'ye geç.**
+
+---
+
+## Kademe 2 — DİNLE (Orta, Groq Whisper)
+
+Hedef: Sesi indir, Whisper ile transkribe et.
+
+```bash
+# Ses indir (mp3, en iyi kalite)
+yt-dlp -x --audio-format mp3 --audio-quality 0 \
+  -o /tmp/video_%(id)s.%(ext)s VIDEO_URL
+
+# Groq Whisper ile transkript al (hızlı + ucuz)
+# ~/.hermes/.env içinde GROQ_API_KEY olmalı
+curl -s https://api.groq.com/openai/v1/audio/transcriptions \
+  -H "Authorization: Bearer $GROQ_API_KEY" \
+  -F "file=@/tmp/video_ID.mp3" \
+  -F "model=whisper-large-v3" \
+  -F "language=tr" | python3 -c "import sys,json; print(json.load(sys.stdin)['text'])"
+```
+
+**Ses 25MB'ı aşarsa:**
+```bash
+# ffmpeg ile parçala (10 dakikalık dilimler)
+ffmpeg -i /tmp/video_ID.mp3 -f segment -segment_time 600 \
+  -c copy /tmp/video_part_%03d.mp3
+# Her parçayı ayrı ayrı Whisper'a gönder, birleştir
+```
+
+**Groq başarısız → OpenAI Whisper fallback:**
+```bash
+curl -s https://api.openai.com/v1/audio/transcriptions \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -F "file=@/tmp/video_ID.mp3" \
+  -F "model=whisper-1"
+```
+
+---
+
+## Kademe 3 — İZLE (Pahalı, Frame Analizi)
+
+**Ne zaman kullanılır:**
+- Transkript alındı ama konu görsel anlama gerektiriyor (grafik, demo, teknik görsel)
+- Transkript hiç alınamadı ama video kritik
+- Kendi kararın: içerik görsel bağlam olmadan tam anlaşılamıyorsa
+
+**Kullanıcıya söyle:** "İçeriği tam anlamak için frame analizi yapıyorum, biraz token harcayacak."
+
+```bash
+# Video indir
+yt-dlp -o /tmp/video_%(id)s.mp4 VIDEO_URL
+
+# Süreye göre frame rate hesapla
+# ≤30sn  → fps=1   (~30 frame)
+# 30s-3dk → fps=0.5 (~60-90 frame)
+# 3dk-10dk → fps=0.2 (~36-120 frame)
+# Max 100 frame (token bütçesi)
+
+DURATION=$(ffprobe -i /tmp/video_ID.mp4 -show_entries format=duration \
+  -v quiet -of csv="p=0" | cut -d. -f1)
+
+if [ $DURATION -le 30 ]; then FPS=1
+elif [ $DURATION -le 180 ]; then FPS=0.5
+else FPS=0.2
+fi
+
+ffmpeg -i /tmp/video_ID.mp4 -vf "fps=${FPS}" \
+  /tmp/frames_%03d.jpg -loglevel quiet
+
+# Frame sayısı 100'ü geçmesin
+ls /tmp/frames_*.jpg | wc -l
+```
+
+Frame'leri + mevcut transkripti birleştirerek Claude Vision ile analiz et.
+
+---
+
+## Kademe 4 — SOR
+
+Her şey başarısız olduğunda:
+
+```
+Şu yöntemlerle erişmeye çalıştım ama olmadı:
+- yt-dlp (altyazı, android client, cookies)
+- jina.ai metin çıkarıcı
+- Ses indirme + Whisper
+
+Seçeneklerin:
+1. Transkripti kendin kopyala yapıştır
+2. Video dosyasını yükle (lokal MP4)
+3. Videonun konusunu anlat, oradan devam edelim
+```
+
+---
+
+## Karar Ağacı — Ne Zaman İzlenir?
+
+```
+Birkan "izle" dedi mi?
+  → Evet: Kademe 3'e git
+  → Hayır: Çek/Dinle yeterli mi?
+      → Evet: Orada dur
+      → Hayır (görsel konu, demo, grafik):
+          → "Frame analizi yapıyorum, token harcayacak" de → Kademe 3
+```
+
+Transkript başarıyla alındıysa ve konu metin anlaşılabiliriyse **asla** Kademe 3'e geçme.
+
+---
+
+## Desteklenen Platformlar
+YouTube, TikTok, Twitter/X, Instagram, Vimeo, Loom, Dailymotion, Twitch VOD + 1000+ site
+
+## Limitler
+| Limit | Detay |
+|-------|-------|
+| En iyi sonuç | 10 dakika altı |
+| Max frame | 100 |
+| Max Whisper | 25 MB (~50dk mono ses) |
+| Private içerik | Desteklenmiyor |
+
+## Araçlar (VPS'te kurulu)
+- `yt-dlp` v2026.03.17 → `/usr/local/bin/yt-dlp`
+- `ffmpeg` → `/usr/bin/ffmpeg`
+- `GROQ_API_KEY` → `~/.hermes/.env`
+
+---
+
+## Eski Skill'lerle İlişki
+Bu skill `birkan-video-watch` + `birkan-ai-video` yerine geçer.
+- `birkan-video-watch` → arşivde, bot koruması notları buraya taşındı
+- `birkan-ai-video` → arşivde, Mac path'leri içeriyordu (VPS'te çalışmıyordu)

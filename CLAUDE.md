@@ -531,7 +531,7 @@ cat ~/.hermes/skills/SKILL_ADI/SKILL.md
 | Konu / Tetikleyici | Skill Dosyası |
 |--------------------|--------------|
 | Veri görselleştirme, dashboard, grafik, infografik, Xenographics, L-sistemi | `data-product-designer` |
-| YouTube analiz, video içerik, transkript | `birkan-video-watch` |
+| YouTube analiz, video içerik, transkript, video izle/dinle/çek | `birkan-video-pipeline` |
 | Video üretim, prompt, script yazımı | `birkan-video-production-kit` |
 | SEO, içerik stratejisi | `birkan-ai-seo`, `birkan-seo-pipeline` |
 | Derin araştırma, kaynak tarama | `birkan-deep-research`, `birkan-autoresearch` |
