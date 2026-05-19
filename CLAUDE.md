@@ -6,6 +6,11 @@
 > **YAPILACAKLAR:** `/root/YAPILACAKLAR.md` — Birkan'ın tüm görev listesi burada.
 > Her yeni görev, karar veya tamamlanan iş oraya kaydedilmeli.
 
+> **OTOMATİK KURAL — SKILL KONTROLÜ:**
+> Bir konu geldiğinde `~/.hermes/skills/` altında ilgili skill var mı kontrol et ve oku.
+> Birkan'ın her konuşmada "yeteneklerimize bak" demesine gerek kalmamalı.
+> Konu → Skill eşlemesi aşağıdaki **SKILL İNDEKSİ** bölümünde.
+
 ---
 
 ## KİM OLDUĞUMUZ
@@ -512,6 +517,40 @@ cd /root/2026-hermes-trello-agent && uvicorn main:app --port 8005
 - **Nexus-1 → YT Harvester** — isim değiştirildi (2026-05-19)
 - **Tauri 2.0 tercih edildi** — Chrome Extension + Tauri masaüstü app roadmap belirlendi
 - **yt-dlp PyInstaller'a gömülmez** — YouTube haftalık değişir, frozen binary bozulur
+
+---
+
+## SKILL İNDEKSİ — Otomatik Kontrol Kuralı
+
+**Kural:** Aşağıdaki konular geldiğinde, karşısındaki skill dosyasını oku. Birkan'ın hatırlatmasını bekleme.
+
+```bash
+cat ~/.hermes/skills/SKILL_ADI/SKILL.md
+```
+
+| Konu / Tetikleyici | Skill Dosyası |
+|--------------------|--------------|
+| Veri görselleştirme, dashboard, grafik, infografik, Xenographics, L-sistemi | `data-product-designer` |
+| YouTube analiz, video içerik, transkript | `birkan-video-watch` |
+| Video üretim, prompt, script yazımı | `birkan-video-production-kit` |
+| SEO, içerik stratejisi | `birkan-ai-seo`, `birkan-seo-pipeline` |
+| Derin araştırma, kaynak tarama | `birkan-deep-research`, `birkan-autoresearch` |
+| Multi-agent, ajan koordinasyonu, swarm | `birkan-agent-teams__task-coordination-strategies`, `recursive-mas` |
+| Masaüstü uygulama, PyInstaller, Tauri, Chrome Extension | `birkan-desktop-packaging` |
+| MCP server kurulum, yapılandırma | `birkan-mcp-servers-guide`, `birkan-mcp-catalog` |
+| Claude paralel kullanım, headless | `birkan-claude-parallel` |
+| Model seçimi, provider karşılaştırma | `birkan-model-secim`, `birkan-ai-model-scout` |
+| API tasarımı, backend | `birkan-backend-development__api-design-principles` |
+| Workflow orkestrasyon | `birkan-backend-development__workflow-orchestration-patterns` |
+| Copywriting, metin yazarlığı | `birkan-copywriting`, `birkan-humanizer` |
+| Trello agent, görev yönetimi | `2026-hermes-trello-agent` |
+| Medium scraping | `2026-medium-reader` |
+| Yeni skill oluşturma | `birkan-anthropic-skill-creator`, `auto-repo-to-skill` |
+| Graphify, knowledge graph | `birkan-graphify-skill` |
+| Subagent, delegasyon | `birkan-subagents-catalog` |
+| Kermes, terminal orchester | `birkan-terminal-orchester` |
+
+**Yeni skill eklendiğinde bu tabloyu da güncelle.**
 
 ---
 
