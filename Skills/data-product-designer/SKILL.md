@@ -1,7 +1,7 @@
 ---
 name: data-product-designer
-description: UX odaklı veri analitiği, ileri düzey gösterge paneli (dashboard) tasarımı, Edward Tufte veri-mürekkep optimizasyonu ve büyük veri görselleştirme performans stratejilerini uygulayan yetenek.
-tags: [data-analysis, ux-design, visualization, dashboard, performance, powerbi, streamlit]
+description: UX odaklı veri analitiği, ileri düzey gösterge paneli tasarımı, Edward Tufte veri-mürekkep optimizasyonu, Xenographics, L-sistemleri, tomografik katmanlama ve ödüllü görselleştirme metodolojileri.
+tags: [data-analysis, ux-design, visualization, dashboard, performance, powerbi, streamlit, xenographics, l-systems, data-art, data-humanism]
 ---
 
 # Data Product Designer (UX-Driven Data Architect)
@@ -79,3 +79,122 @@ Milyarlarca veri noktasını veya Lidar Point-Cloud yapılarını işlerken (Mat
 
 **4. D3.js ve Closeread (Quarto)**
 Karar vericilere statik tablo değil, 'Veri Hikayesi' sunmak için "Scrollytelling" altyapıları. Okuyucu aşağı kaydırdıkça grafiklerin canlandığı etkileşimli sunumlar inşa eder.
+
+---
+
+## 🎨 Avangart Görselleştirme: Xenographics, L-Sistemleri ve Estetik Mükemmellik
+
+Bu bölüm; ödül kazanan (Red Dot, Kantar Information is Beautiful, Webby) veri görselleştirmelerinin temel metodolojilerini kapsar. Standard grafiklerin yetersiz kaldığı durumlarda devreye girer.
+
+### Ne Zaman Kullanılmalı
+- "Ödül alan görselleştirme nasıl yapılır" / "bilgi tasarımı" / "infografik estetik" sorulduğunda.
+- Botanik, bilimsel, doğa veya çok katmanlı veri setleri görselleştirilecekse.
+- "Xenographics", "L-sistemi", "veri sanatı", "veri hümanizmi" kelimeleri geçtiğinde.
+- Standart bar/pie/line grafiklerinin yetersiz kaldığı karmaşık ilişkisel verilerde.
+
+---
+
+### 🧠 Veri Hümanizmi (Giorgia Lupi)
+Veriye salt teknik yaklaşımı reddeder. Temel ilkeler:
+- Rakamların arkasındaki **nüans, belirsizlik ve insani bağlamı** görünür kıl.
+- Teknolojiyi devreden çıkar, **kağıtta eskizle** — yazılım kısıtlamalarından özgürleş.
+- Her görselleştirmeye **"Nasıl Okunur" (How to Read It)** rehberi ekle.
+- Karmaşıklığı kaçınılması gereken bir şey olarak değil, **kucaklanması gereken bir zenginlik** olarak gör.
+- Referans: *Dear Data* projesi (Lupi + Posavec) — elle çizilmiş haftalık veri kartpostalları.
+
+---
+
+### 📊 Xenographics — Alışılmadık Grafik Türleri
+Maarten Lambrechts'in derlediği "xenographics" kütüphanesi, standart grafiklerin anlatamadığı veri yapıları için kullanılır:
+
+**Zaman ve Döngü Grafikleri:**
+- **Radyal Zaman Çizelgesi** — mevsimsel/döngüsel veriler için daire formunda çizgi grafik.
+- **Heatmap Takvim** — 365 günlük yoğunluk verisi tek görselde.
+- **Horizon Chart** — çakışan bantlarla yüksek yoğunluklu zaman serisi.
+- **Stream Graph** — akış/hacim değişimi, kategoriler arası geçişler.
+
+**Korelasyon ve Dağılım:**
+- **Beeswarm Plot** — çakışmayan noktalarla bireysel veri dağılımı.
+- **Ridgeline Chart** — kategoriler arası dağılım karşılaştırması.
+- **Chord Diagram** — iki taraflı akış/ilişki (göç, ticaret, bağlantı).
+- **Arc Diagram** — ağ bağlantılarını lineer düzlemde gösterir.
+
+**Ağ ve Hiyerarşi:**
+- **Sunburst** — iç içe hiyerarşiyi halka formunda gösterir.
+- **Treemap + Voronoi** — alan oranı + organik sınır birleşimi.
+- **Alluvial Diagram** — kategorilerin zaman içinde nasıl dönüştüğünü gösterir.
+
+**Uygulama Kuralı:** Her xenographic türün yanına **"Nasıl Okunur"** kılavuzu ekle. İzleyiciyi öğrenme sürecine davet et, şaşırtma — aydınlat.
+
+---
+
+### 🌿 L-Sistemleri — Algoritmik Botanik Modelleme
+Aristid Lindenmayer'ın (1968) geliştirdiği dize-yeniden yazma algoritması; bitki büyümesini matematiksel olarak modeller ve **veriyi organik form olarak görselleştirir**.
+
+**Temel yapı:**
+```
+Aksiyom: F
+Kurallar: F → F[+F]F[-F]F
+Turtle komutları:
+  F = ileri git + çizgi çiz (dal uzat)
+  + = sola dön (θ açısı)
+  - = sağa dön (θ açısı)
+  [ = mevcut pozisyonu kaydet
+  ] = kaydedilen pozisyona dön (dal bitir)
+```
+
+**Veri güdümlü L-sistemleri (Parametrik 0L):**
+- Yağış miktarı → dal uzunluğu çarpanı
+- Sıcaklık / güneş açısı → dallanma açısı (θ)
+- Kimyasal konsantrasyon → yaprak boyutu / rengi
+- Yıllık büyüme verisi → gövde kalınlığı
+
+**Araçlar:** Python (`turtle`, `networkx`), Processing, p5.js, OpenSCAD, Blender Geometry Nodes.
+
+**Sonuç:** Veri her parametreyi kontrol eder — ortaya çıkan form hem botanik olarak gerçekçi hem de istatistiksel olarak doğrudur.
+
+---
+
+### 🔬 Tomografik Katmanlama (Z-Ekseni Mimarisi)
+Tıbbi CT taramalarından ilham alır: çok katmanlı veriyi **üst üste binen kesitler** olarak sunar.
+
+**Temel ilke — Z-ekseni hiyerarşisi:**
+1. En üst katman: **Açıklayıcı metinler, efsaneler, "nasıl okunur" rehberi**
+2. Orta katman: **Veri işaretçileri** (xenographic elemanlar, L-sistemi görselleri)
+3. Alt katman: **Arka plan, ızgara çizgileri, baz haritalar**
+
+**Patlatılmış görünüm (Exploded View):**
+- Odak noktasından sanal mercek hatları çıkar → sayfanın kenarına izometrik kesitler yerleştir.
+- Her kesit farklı bir veri katmanını (anatomik, kimyasal, coğrafi) temsil eder.
+- Katmanlar arasında görsel bağlantı (leader lines) kur.
+
+**Yazılım iş akışı:**
+1. **RAWGraphs** → ham verideki geometrik iskelet (vektörel çıktı)
+2. **Adobe Illustrator** → katman mimarisi, renk, tipografi, organik düzenlemeler
+3. **Datylon for Illustrator** → Google Sheets/CSV verisini doğrudan Illustrator'a bağla (dinamik güncelleme)
+
+---
+
+### 🏆 Ödüllü Stüdyolar ve Metodolojileri
+
+| Tasarımcı / Stüdyo | Odak | Yaklaşım |
+|---|---|---|
+| **Giorgia Lupi** (Accurat) | Veri Hümanizmi | Elle eskizle başla, sonra dijitale taşı |
+| **Nadieh Bremer** | Veri Sanatı (Data Art) | Algoritmik + estetik, varsayılanları tamamen reddet |
+| **Federica Fragapane** | Organik görsel alfabeler | RAWGraphs → Illustrator, izleyiciyle empati |
+| **Threestory Studio** | Bilgi tasarımı | Bağlam tartışması → napkin sketch → vektör |
+| **5W Infographics** | Yüksek yoğunluklu haritalar | National Geographic tarzı "saatlerce bakılabilir" |
+| **Pentagram** | Tipografik veri entegrasyonu | Marka kimliği + veri anlatısı birleşimi |
+
+**Ödül platformları:** Kantar Information is Beautiful Awards, Red Dot Award, Webby Award, A'Design Award.
+
+---
+
+### 🎯 Estetik Mükemmellik İçin Kontrol Listesi
+Bir görselleştirmenin ödül kalitesine ulaşması için:
+- [ ] Her piksel veri taşıyor mu? (Tufte Data-Ink Ratio)
+- [ ] "Nasıl Okunur" rehberi var mı?
+- [ ] Renk körlüğü testi yapıldı mı? (WCAG 2.1 AA)
+- [ ] Varsayılan grafik türü reddedildi, veri yapısına özel form seçildi mi?
+- [ ] Z-ekseni hiyerarşisi (metin > veri > arka plan) uygulandı mı?
+- [ ] İzleyici veriyle 10 dakikadan fazla vakit geçirebilir mi?
