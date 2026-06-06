@@ -163,6 +163,54 @@ Sharpe: X.XX | PnL: $X | Win Rate: X%
 
 ---
 
+## Altyapı Seçimi: Lightning.ai ne zaman mantıklı, ne zaman değil?
+
+> **First-Principles Analizi (2026-06-06)**
+> Lightning.ai; AWS/GCP/Azure'un ham karmaşıklığını (CUDA sürücüleri, cluster yönetimi) soyutlayan,
+> PyTorch Lightning ekibi tarafından geliştirilmiş bir ML-odaklı PaaS platformudur.
+
+### Trade Bot Mimarisindeki Yeri
+
+**KULLANILMAZ (Maliyet tuzağı):**
+- Backtest döngüsü CPU-bound — A100/H100 GPU kiralamak para yakımı
+- Gece 100 deney zaten kendi VPS'inde çalışır, sabit maliyet sıfır ek ücret
+
+**KULLANILIR (Asimetrik avantaj):**
+- **Fine-tuning / LoRA:** Kendi fiyat verinle bir trading sinyali modeli fine-tune etmek
+  gerektiğinde → Lightning.ai'de anlık GPU tahsis et, bitince kapat, sadece saat ücret öde
+- **Büyük model testi:** 70B parametreli bir LLM'yi trading analizi için denemek istersen —
+  lokal donanım sınırı yok, birkaç dakikada A100 kur
+- **Burst hesaplama:** Yıllık backtest datasını paralel GPU işlemi ile hızlandırmak
+
+### On-Demand Endpoint Mimarisi (Önerilen Pattern)
+
+```
+n8n / cron trigger
+      ↓
+Kendi VPS (her zaman açık, sıfır ek maliyet)
+      ↓ sadece ağır ML gerektiğinde
+Lightning.ai FastAPI endpoint (uyku → uyanır → çalışır → uykuya döner)
+      ↓
+Sonuç → Telegram raporu
+```
+
+**Idle Timeout ayarla** → işlem biter, stüdyo uykuya geçer, para durar.
+
+### Kritik Uyarılar
+
+| Senaryo | Karar |
+|---------|-------|
+| 7/24 çalışan backtest API | ❌ Kendi VPS daha ucuz |
+| Sadece dış API çağrısı (OpenAI, Anthropic) | ❌ Gereksiz katman |
+| Model fine-tuning (tek seferlik) | ✅ On-demand GPU |
+| Büyük açık kaynak model çalıştırma | ✅ Anlık test |
+| Ölçek büyüdüğünde (production) | ⚠️ AWS Spot Instance daha ucuz |
+
+> **Sonuç:** Bu trade bot için Lightning.ai bir "üretim altyapısı" değil,
+> araştırma-geliştirme aşamasında GPU gerektiğinde kiralanan bir **"hesaplama musluğu"** olarak konumlandırılmalı.
+
+---
+
 ## Bağlantılı Kaynaklar
 
 - [karpathy/autoresearch](https://github.com/karpathy/autoresearch) — İlham kaynağı
@@ -170,3 +218,4 @@ Sharpe: X.XX | PnL: $X | Win Rate: X%
 - [vectorbt](https://vectorbt.dev/) — Python backtest kütüphanesi
 - [ccxt](https://github.com/ccxt/ccxt) — Exchange API kütüphanesi
 - [Aider](https://aider.chat/) — Terminal AI coding agent
+- [Lightning.ai](https://lightning.ai) — On-demand GPU stüdyosu (fine-tuning / burst ML için)
