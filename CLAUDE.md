@@ -1,7 +1,7 @@
 # SISTEM BAĞLAM DOSYASI
 > Bu dosya, bu sunucuya bağlanan her yapay zeka asistanının (Claude Code, Hermes, OpenCode vb.)
 > okuyarak hızlıca bağlamı kavraması için yazılmıştır.
-> Son güncelleme: 2026-05-19
+> Son güncelleme: 2026-06-06
 
 > **YAPILACAKLAR:** `/root/YAPILACAKLAR.md` — Birkan'ın tüm görev listesi burada.
 > Her yeni görev, karar veya tamamlanan iş oraya kaydedilmeli.
@@ -92,11 +92,11 @@ Telegram, Discord, Slack, WhatsApp, Signal, Matrix ve daha fazlası
 
 ---
 
-### 2. OpenCode — KURULU, AUTH YOK ⚠️
+### 2. OpenCode — AKTİF ✅
 - **Versiyon:** 1.14.51
 - **Konum:** `/usr/bin/opencode`
-- **Durum:** NovitaAI API key var (`NOVITA_API_KEY` env), ama hiç oturum yok
-- **Yapılacak:** `opencode auth add` ile provider eklenmeli
+- **Durum:** 2 provider auth edilmiş (OpenCode Zen + Go API)
+- **Not:** `~/.local/share/opencode/auth.json` içinde
 - **Kullanım amacı:** Headless kodlama görevi (`opencode --print 'prompt'`)
 
 ---
@@ -117,8 +117,8 @@ Telegram, Discord, Slack, WhatsApp, Signal, Matrix ve daha fazlası
 
 ---
 
-### 5. Redis — KURULU DEĞİL ❌
-- Plan: `apt install redis-server`
+### 5. Redis — AKTİF ✅
+- Versiyon: 7.0.15, systemd servis aktif, boot'ta otomatik başlar
 - Kullanım amacı: Redis Streams ile ajan mesaj kuyruğu
 
 ---
@@ -347,7 +347,7 @@ hermes -z "Test sorusu"   # tam chain testi
 - eBPF LSM hook'ları ile sandbox izolasyonu (Docker yerine)
 - Redis Streams ile ajan mesaj kuyruğu
 - FastAPI üzerinden API katmanı
-- **Engel:** Redis kurulu değil
+- **Durum:** Redis kurulu (v7.0.15), eBPF kernel destekli, FastAPI implementasyonu bekliyor
 
 ### 2. RecursiveMAS Protokolü
 - Ajanlar arası metin yerine latent-space vektör iletişimi
@@ -488,14 +488,14 @@ Kullanmak istersen önce `! gh auth login` yap (tarayıcı ile OAuth akışı).
 systemctl status hermes-gateway
 ls /usr/local/lib/hermes-agent/
 
-# Hermes güncelleme (bekliyor)
+# Hermes güncelleme
 cd /usr/local/lib/hermes-agent && hermes update
 
-# OpenCode auth (bekliyor)
-opencode auth add
+# OpenCode auth (2 provider mevcut: Zen + Go)
+opencode auth list
 
-# Redis kurulum (bekliyor)
-apt install -y redis-server && systemctl enable --now redis-server
+# Redis durumu (v7.0.15, active)
+systemctl status redis-server
 
 # Aktif portlar
 ss -tlnp
