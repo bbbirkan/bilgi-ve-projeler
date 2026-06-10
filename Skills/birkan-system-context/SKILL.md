@@ -1,10 +1,20 @@
+---
+name: birkan-system-context
+description: "Birkan Kalyon'un Contabo VDS sunucusundaki AI otomasyon ekosisteminin tam bağlamı. Bu dosyayı oku: sunucu durumu, kurulu sistemler, aktif projeler, port haritası, GitHub/SSH kuralları, skill indeksi ve geçmiş kararlar. 'sistemi tanı', 'bağlamı anla', 'projeler neler', 'ne kurulu', 'skill indeksi' gibi sorgularda kullan."
+---
+
 # SISTEM BAĞLAM DOSYASI
 > Bu dosya, bu sunucuya bağlanan her yapay zeka asistanının (Claude Code, Hermes, OpenCode vb.)
 > okuyarak hızlıca bağlamı kavraması için yazılmıştır.
-> Son güncelleme: 2026-05-19
+> Son güncelleme: 2026-06-10
 
 > **YAPILACAKLAR:** `/root/YAPILACAKLAR.md` — Birkan'ın tüm görev listesi burada.
 > Her yeni görev, karar veya tamamlanan iş oraya kaydedilmeli.
+
+> **OTOMATİK KURAL — SKILL KONTROLÜ:**
+> Bir konu geldiğinde `~/.hermes/skills/` altında ilgili skill var mı kontrol et ve oku.
+> Birkan'ın her konuşmada "yeteneklerimize bak" demesine gerek kalmamalı.
+> Konu → Skill eşlemesi aşağıdaki **SKILL İNDEKSİ** bölümünde.
 
 ---
 
@@ -18,8 +28,8 @@
 **Sunucu:** Contabo VDS
 - Hostname: `vmi2701691`
 - OS: Ubuntu 24.04.3 LTS
-- RAM: 7.8 GB (3.5 GB kullanımda)
-- Disk: 145 GB (43 GB dolu, 102 GB boş)
+- RAM: 7.8 GB (swap: 2GB at /swapfile)
+- Disk: 145 GB (66 GB dolu, 79 GB boş)
 - Kernel: 6.8.0-87-generic (eBPF destekli)
 
 ---
@@ -51,7 +61,7 @@ GitHub / Trello / YouTube / Borsa / Medium API'ları
 
 ### 1. Hermes Agent — AKTİF ✅
 - **Konum:** `/usr/local/lib/hermes-agent`
-- **Versiyon:** v0.13.0 (432 commit geride — `hermes update` bekliyor)
+- **Versiyon:** v0.14.0 — güncel
 - **Servis:** `hermes-gateway.service` aktif ve çalışıyor
 - **Config:** `~/.hermes/config.yaml` veya proje içindeki `cli-config.yaml`
 
@@ -87,11 +97,11 @@ Telegram, Discord, Slack, WhatsApp, Signal, Matrix ve daha fazlası
 
 ---
 
-### 2. OpenCode — KURULU, AUTH YOK ⚠️
+### 2. OpenCode — AKTİF ✅
 - **Versiyon:** 1.14.51
 - **Konum:** `/usr/bin/opencode`
-- **Durum:** NovitaAI API key var (`NOVITA_API_KEY` env), ama hiç oturum yok
-- **Yapılacak:** `opencode auth add` ile provider eklenmeli
+- **Durum:** 2 provider auth edilmiş (OpenCode Zen + Go API)
+- **Not:** `~/.local/share/opencode/auth.json` içinde
 - **Kullanım amacı:** Headless kodlama görevi (`opencode --print 'prompt'`)
 
 ---
@@ -112,8 +122,8 @@ Telegram, Discord, Slack, WhatsApp, Signal, Matrix ve daha fazlası
 
 ---
 
-### 5. Redis — KURULU DEĞİL ❌
-- Plan: `apt install redis-server`
+### 5. Redis — AKTİF ✅
+- Versiyon: 7.0.15, systemd servis aktif, boot'ta otomatik başlar
 - Kullanım amacı: Redis Streams ile ajan mesaj kuyruğu
 
 ---
@@ -255,38 +265,72 @@ MEDIUM_UID=...
 
 ---
 
-### Proje O — Orchester ✅ ÇALIŞIYOR
+### Proje O — Orchester ✅ TAM ÇALIŞIYOR (2026-05-19 v0.2)
 **Repo:** `github.com/bbbirkan/2026-orchester`
 **Dizin:** `/root/2026-orchester`
 **Port:** 8006
+**Servis:** `orchester.service` (systemd, boot'ta otomatik başlar)
 
-**Amaç:** 3 farklı AI modeli aynı soruya cevap verir, birbirlerini görüp revize eder, hakem sentez yapar.
+**Amaç:** API key yok, sadece subscription. 3 farklı AI CLI soruyu sınıflandırıp akıllıca yönlendirir.
 
-**Akış:**
+**İki sistem var:**
+- `terminal_orchester.py` — 3 farklı CLI (Claude + OpenCode + Gemini), smart routing
+- `orchester.py` — Claude-only, 3 persona (Analist/Eleştirmen/Pragmatist), tartışma formatı
+
+**Smart mod akışı (varsayılan, v0.2):**
 ```
-Soru → Claude + Gemini + GLM-4.7 (paralel, Tur 1)
-     → Herkes diğerlerini görür, revize eder (Tur 2)
-     → Hakem (Claude) final sentez üretir
-     → debates/TIMESTAMP.md olarak kaydedilir
+Telegram → Hermes → localhost:8006/v1 → classify(Claude)
+         → basit: Claude tek (~10sn)
+         → orta:  Claude + OpenCode paralel, Claude sentezler (~35sn)
+         → zor:   3 CLI konsey, max 3 tur, Claude hakem (~60-90sn)
+         → SSE stream → Telegram yanıtı
+         → debates/TIMESTAMP.md olarak kaydedilir
 ```
 
-**Kullanım:**
+**Test sonuçları (2026-05-19):**
+| Soru | Seviye | Süre | Not |
+|------|--------|------|-----|
+| "nasılsın" | basit | 11sn | "İyiyim, teşekkürler!" |
+| async vs threading | orta | 36sn | Tablo + karar ağacı |
+| AI orkestrasyon mimarisi | zor | 54sn | Tur 1'de uzlaşma |
+
+**Hermes entegrasyonu (~/.hermes/config.yaml) — kritik ayarlar:**
+```yaml
+model:
+  default: terminal-orchester
+  provider: custom:orchester
+custom_providers:
+  - name: orchester
+    base_url: http://localhost:8006/v1
+    api_mode: chat_completions
+agent:
+  max_turns: 1      # loop önleme — kritik
+toolsets: []        # agentic loop önleme — kritik
+platform_toolsets:
+  cli: []           # agentic loop önleme — kritik
+  telegram:
+  - hermes-telegram
+```
+
+**Teknik notlar:**
+- Hermes her zaman `stream: true` gönderir → SSE zorunlu
+- Keepalive SSE (`: keepalive\n\n`) her 5sn → 90sn'lik işlemlerde bağlantıyı korur
+- Loop tespiti: messages'da assistant varsa son yanıtı geri döndür
+- `CLAUDE_CODE_BUBBLEWRAP=1` env zorunlu (root'ta çalıştırmak için)
+- Gemini timeout: 180sn (120sn yetersiz kalıyordu)
+
+**Servis yönetimi:**
 ```bash
-# CLI:
-OPENROUTER_API_KEY=... python3 orchester.py "Sorum ne?"
-python3 orchester.py --rounds 1 "Hızlı soru"
-
-# API (port 8006):
-uvicorn main:app --port 8006
-curl -X POST http://localhost:8006/debate -d '{"task":"Sorum","rounds":2}'
-curl http://localhost:8006/result
-curl http://localhost:8006/debates   # geçmiş tartışmalar
+systemctl status orchester.service
+journalctl -u orchester -f
+systemctl restart orchester.service
+hermes -z "Test sorusu"   # tam chain testi
 ```
 
-**Modeller:**
-- `anthropic/claude-sonnet-4-5` (OpenRouter)
-- `google/gemini-2.5-flash` (OpenRouter)
-- `z-ai/glm-4.7` (OpenRouter)
+**Modeller (subscription, API key yok):**
+- Claude Code CLI → Anthropic Pro subscription
+- OpenCode CLI → OpenCode Zen (DeepSeek v4 Pro)
+- Gemini CLI → Google subscription / free tier
 
 ---
 
@@ -308,7 +352,7 @@ curl http://localhost:8006/debates   # geçmiş tartışmalar
 - eBPF LSM hook'ları ile sandbox izolasyonu (Docker yerine)
 - Redis Streams ile ajan mesaj kuyruğu
 - FastAPI üzerinden API katmanı
-- **Engel:** Redis kurulu değil
+- **Durum:** Redis kurulu (v7.0.15), eBPF kernel destekli, FastAPI implementasyonu bekliyor
 
 ### 2. RecursiveMAS Protokolü
 - Ajanlar arası metin yerine latent-space vektör iletişimi
@@ -449,14 +493,14 @@ Kullanmak istersen önce `! gh auth login` yap (tarayıcı ile OAuth akışı).
 systemctl status hermes-gateway
 ls /usr/local/lib/hermes-agent/
 
-# Hermes güncelleme (bekliyor)
+# Hermes güncelleme
 cd /usr/local/lib/hermes-agent && hermes update
 
-# OpenCode auth (bekliyor)
-opencode auth add
+# OpenCode auth (2 provider mevcut: Zen + Go)
+opencode auth list
 
-# Redis kurulum (bekliyor)
-apt install -y redis-server && systemctl enable --now redis-server
+# Redis durumu (v7.0.15, active)
+systemctl status redis-server
 
 # Aktif portlar
 ss -tlnp
@@ -478,6 +522,42 @@ cd /root/2026-hermes-trello-agent && uvicorn main:app --port 8005
 - **Nexus-1 → YT Harvester** — isim değiştirildi (2026-05-19)
 - **Tauri 2.0 tercih edildi** — Chrome Extension + Tauri masaüstü app roadmap belirlendi
 - **yt-dlp PyInstaller'a gömülmez** — YouTube haftalık değişir, frozen binary bozulur
+
+---
+
+## SKILL İNDEKSİ — Otomatik Kontrol Kuralı
+
+**Kural:** Aşağıdaki konular geldiğinde, karşısındaki skill dosyasını oku. Birkan'ın hatırlatmasını bekleme.
+
+```bash
+cat ~/.hermes/skills/SKILL_ADI/SKILL.md
+```
+
+| Konu / Tetikleyici | Skill Dosyası |
+|--------------------|--------------|
+| Veri görselleştirme, dashboard, grafik, infografik, Xenographics, L-sistemi | `data-product-designer` |
+| YouTube analiz, video içerik, transkript, video izle/dinle/çek | `birkan-video-pipeline` |
+| Video üretim, prompt, script yazımı | `birkan-video-production-kit` |
+| SEO, içerik stratejisi | `birkan-ai-seo`, `birkan-seo-pipeline` |
+| Derin araştırma, kaynak tarama | `birkan-deep-research`, `birkan-autoresearch` |
+| Multi-agent, ajan koordinasyonu, swarm | `birkan-agent-teams__task-coordination-strategies`, `recursive-mas` |
+| Masaüstü uygulama, PyInstaller, Tauri, Chrome Extension | `birkan-desktop-packaging` |
+| MCP server kurulum, yapılandırma | `birkan-mcp-servers-guide`, `birkan-mcp-catalog` |
+| Claude paralel kullanım, headless | `birkan-claude-parallel` |
+| Model seçimi, provider karşılaştırma | `birkan-model-secim`, `birkan-ai-model-scout` |
+| API tasarımı, backend | `birkan-backend-development__api-design-principles` |
+| Workflow orkestrasyon | `birkan-backend-development__workflow-orchestration-patterns` |
+| Copywriting, metin yazarlığı | `birkan-copywriting`, `birkan-humanizer` |
+| Trello agent, görev yönetimi | `2026-hermes-trello-agent` |
+| Medium scraping | `2026-medium-reader` |
+| Yeni skill oluşturma | `birkan-anthropic-skill-creator`, `auto-repo-to-skill` |
+| Graphify, knowledge graph | `birkan-graphify-skill` |
+| Subagent, delegasyon | `birkan-subagents-catalog` |
+| Kermes, terminal orchester | `birkan-terminal-orchester` |
+| Skill senkronizasyonu, sistem bağlamı güncelleme | `birkan-skill-sync` |
+| Chrome eklenti geliştirme, MV3, manifest v3, CWS SEO, extension monetizasyon | `birkan-chrome-extension-mv3` |
+
+**Yeni skill eklendiğinde bu tabloyu da güncelle.**
 
 ---
 
