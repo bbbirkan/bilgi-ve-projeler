@@ -562,3 +562,4 @@ cat ~/.hermes/skills/SKILL_ADI/SKILL.md
 ---
 
 *Bu dosya `/root/CLAUDE.md` konumunda — sunucuya bağlanan tüm AI asistanları buradan başlamalı.*
+*Senkronizasyon için: `bash ~/.hermes/skills/birkan-skill-sync/scripts/sync.sh`*
