@@ -154,6 +154,7 @@ Telegram, Discord, Slack, WhatsApp, Signal, Matrix ve daha fazlası
 | 8004 | medium-reader | `/root/2026-medium-reader` |
 | 8005 | trello-agent | `/root/2026-hermes-trello-agent` |
 | 8006 | orchester | `/root/2026-orchester` |
+| 8007 | yt-signal | `/root/2026-yt-signal` |
 
 ---
 
@@ -343,6 +344,21 @@ hermes -z "Test sorusu"   # tam chain testi
 2. **Tauri 2.0 Desktop** (3-5 gün) — channel-router → PyInstaller binary → native app (~40MB RAM, ~3MB installer)
 
 **Neden Tauri?** Electron'a göre ~5x daha az RAM, ~40x küçük installer.
+
+---
+
+### Proje YT Signal — AKTİF ✅ (2026-06-10)
+**Dizin:** `/root/2026-yt-signal`
+**Port:** 8007 (`yt-signal.service` — boot'ta otomatik başlar)
+**Servis:** `yt-signal-indexer.timer` — saatte 100 video işler
+**Amaç:** 2961 YouTube finans transkripti → MiniMax M3 entity extraction → piyasa sinyali
+
+**LLM Wiki Katmanları:**
+- `video_transcripts` (raw) → `video_signals` (sources) → `graph.json` (entities) → `/root/wiki/` (Markdown)
+- Sorgulama: `curl localhost:8007/consensus`, `/query?ticker=NVDA`, `/anomaly`
+- Wiki: `/root/wiki/entities/NVDA.md` vb. — Obsidian uyumlu
+
+**Kanallar (21):** Graham Stephan, Meet Kevin, Bora Özkent, Paribu, Dividend Talks, Andrei Jikh vb.
 
 ---
 
@@ -550,6 +566,7 @@ cat ~/.hermes/skills/SKILL_ADI/SKILL.md
 | Copywriting, metin yazarlığı | `birkan-copywriting`, `birkan-humanizer` |
 | Trello agent, görev yönetimi | `2026-hermes-trello-agent` |
 | Medium scraping | `2026-medium-reader` |
+| YouTube sinyal, transkript sorgu, piyasa konsensüs, ticker analiz | `2026-yt-signal` |
 | Yeni skill oluşturma | `birkan-anthropic-skill-creator`, `auto-repo-to-skill` |
 | Graphify, knowledge graph | `birkan-graphify-skill` |
 | Subagent, delegasyon | `birkan-subagents-catalog` |
