@@ -6,7 +6,7 @@ description: "Birkan Kalyon'un Contabo VDS sunucusundaki AI otomasyon ekosistemi
 # SISTEM BAĞLAM DOSYASI
 > Bu dosya, bu sunucuya bağlanan her yapay zeka asistanının (Claude Code, Hermes, OpenCode vb.)
 > okuyarak hızlıca bağlamı kavraması için yazılmıştır.
-> Son güncelleme: 2026-06-10
+> Son güncelleme: 2026-06-11
 
 > **YAPILACAKLAR:** `/root/YAPILACAKLAR.md` — Birkan'ın tüm görev listesi burada.
 > Her yeni görev, karar veya tamamlanan iş oraya kaydedilmeli.
@@ -389,6 +389,10 @@ hermes -z "Test sorusu"   # tam chain testi
 - Rate limit bypass için
 - **Engel:** Sunucuda /48 veya daha büyük IPv6 bloğu var mı? Kontrol edilmeli.
 
+### 6. Ajan Mimarileri ve Sandboxing Referansı
+- Dağıtık orkestrasyon, çoklu ajan (multi-agent) desenleri, Celery/RabbitMQ durum yönetimi ve gVisor/Firecracker korumalı alan mimarileri detaylı araştırması.
+- **Dosya:** [reference_agent_architectures.md](file:///root/2026-sovereign/research/reference_agent_architectures.md)
+
 ---
 
 ## API ANAHTARLARI VE PROVIDER'LAR
@@ -551,6 +555,7 @@ cat ~/.hermes/skills/SKILL_ADI/SKILL.md
 
 | Konu / Tetikleyici | Skill Dosyası |
 |--------------------|--------------|
+| CLI araçları, model fiyatları, deep search, OpenCode/Claude Code/Agy karşılaştırma | `sovereign-cli-ecosystem` |
 | Veri görselleştirme, dashboard, grafik, infografik, Xenographics, L-sistemi | `data-product-designer` |
 | YouTube analiz, video içerik, transkript, video izle/dinle/çek | `birkan-video-pipeline` |
 | Video üretim, prompt, script yazımı | `birkan-video-production-kit` |
