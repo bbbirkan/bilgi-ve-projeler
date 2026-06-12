@@ -16728,8 +16728,8 @@
     "hash": "b6ca7a1338db1e1afd5ce4e6f2cefb8c"
   },
   "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/CLAUDE.md": {
-    "mtime": 1779526865.169768,
-    "hash": "ffc19d1ebd144c52ec8850e2fa095b2e"
+    "mtime": 1780812343.6499367,
+    "hash": "59ec215332cab2d1461b328b5e39f29b"
   },
   "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Video/video-production-kit.md": {
     "mtime": 1777608957.4960372,
@@ -16770,6 +16770,14 @@
   "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Video/video-production-kit/examples/README.md": {
     "mtime": 1777608922.7090387,
     "hash": "9409b32a250fd9801b9795a3345fd273"
+  },
+  "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Tools/antigravity-browser-extension/antigravity-browser-extension.md": {
+    "mtime": 1781245921.0219524,
+    "hash": "48e11499d2fe8e11059f7791f7f5720f"
+  },
+  "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Tools/antigravity-browser-extension/SKILL.md": {
+    "mtime": 1781245921.0217772,
+    "hash": "87a3f5b314a2c310b2633c7f4cf01a92"
   },
   "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Code/awesome-claude-skills.md": {
     "mtime": 1777609361.5032327,
@@ -16928,8 +16936,8 @@
     "hash": "6a52f3d013ee679419ed9f3db21a183a"
   },
   "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Code/evolving-trade-bot-concept.md": {
-    "mtime": 1777686135.674873,
-    "hash": "f8094d279105a321788b6bc03478858b"
+    "mtime": 1780812343.6506047,
+    "hash": "bb3e765f6a7dd284cabebf76d0388b13"
   },
   "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Code/awesome-mcp-servers-punkpeye/README-th.md": {
     "mtime": 1777608977.2686937,
@@ -27379,9 +27387,13 @@
     "mtime": 1778861833.6696138,
     "hash": "2fa9dd49c29a590e9f0284c457530de5"
   },
+  "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Skills/birkan-chrome-extension-mv3/SKILL.md": {
+    "mtime": 1781165600.5925338,
+    "hash": "9292059fbef6057aaed10ea35b5a2427"
+  },
   "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Skills/birkan-system-context/SKILL.md": {
-    "mtime": 1779526865.1729662,
-    "hash": "7a38009c36bbc62623142108ac5c7b44"
+    "mtime": 1781245920.8621674,
+    "hash": "906f1ba2b73e0753d36d15fc5797d2e8"
   },
   "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Skills/higgsfield-product-photoshoot/SKILL.md": {
     "mtime": 1778861833.672077,
@@ -27394,6 +27406,10 @@
   "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Skills/birkan-ai-model-scout/SKILL.md": {
     "mtime": 1778861833.6635237,
     "hash": "dca9fdf4f3a56f7e934ff5ef1219f8c7"
+  },
+  "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Skills/birkan-skill-sync/SKILL.md": {
+    "mtime": 1781165600.5927396,
+    "hash": "6e18919d82716070bff761a2751d508b"
   },
   "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Skills/birkan-autoresearch/SKILL.md": {
     "mtime": 1778861833.6652257,
@@ -27678,6 +27694,10 @@
   "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Skills/birkan-video-prompt-builder/SKILL.md": {
     "mtime": 1778861833.6702807,
     "hash": "4c92c1fd59134ee2c0eaeac53b7c64c8"
+  },
+  "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Skills/birkan-ai-agent-memory-rag/SKILL.md": {
+    "mtime": 1781165600.5922878,
+    "hash": "24c24df70450e03d3d490fd8d042aea0"
   },
   "/Users/birkan/Desktop/Work /00 Bilgi - Projeler/Skills/birkan-anthropic-web-artifacts-builder/SKILL.md": {
     "mtime": 1778861833.6651103,

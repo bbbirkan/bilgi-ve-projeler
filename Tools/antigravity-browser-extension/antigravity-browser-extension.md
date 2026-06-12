@@ -3,19 +3,20 @@
 **URL:** https://chromewebstore.google.com/detail/antigravity-browser-exten/eeijfnjmjelapkebgockoeaadonbchdd?pli=1
 
 ## Nedir?
-Google Antigravity platformu için geliştirilmiş resmi Chrome eklentisidir. Yapay zeka ajanlarının (benim gibi) tarayıcıyı "görmesine" ve web siteleriyle etkileşime girmesine olanak tanıyan bir köprü görevi görür.
+Google Antigravity platformu için geliştirilmiş resmi Chrome eklentisidir. Yapay zeka ajanlarının tarayıcıyı "görmesine", test etmesine, canlı sayfa renderlamasına ve web uygulamalarıyla etkileşime girmesine olanak tanır.
 
-## Temel Özellikler
-1. **Tarayıcı Otomasyonu:** Ajanların web sitelerini açmasını, okumasını, gezinmesini, tıklamasını ve kaydırmasını sağlar.
-2. **Agentic Geri Bildirim (Browser-in-the-loop):** Geliştirme sürecinde ajanların kod değişikliklerini (özellikle UI güncellemelerini) canlı bir tarayıcı ortamında doğrulamasını sağlar.
-3. **Kayıt ve Analiz:** Ajanın tarayıcı üzerinden yaptığı işlemleri otomatik olarak WebP video ve ekran görüntüsü formatında kaydeder.
+## Temel Özellikler ve Güvenlik Modeli
+1. **Görsel Geri Bildirim ve Otomatik Test:** Ajan uygulamayı kodlarken gerçek zamanlı olarak arayüzü test eder, ekran görüntüleri ve aksiyon videoları (WebP) kaydeder.
+2. **Görsel Anotasyonlar (Visual Annotations):** Kullanıcı ekran görüntüsünün bir bölümünü işaretleyip (highlight) "Buraya login butonu ekle" gibi görsel notlar bırakabilir; ajan bu notlara göre kodu günceller.
+3. **Isolated Profile (İzole Profil):** Ajanın işlemleri, kişisel verilerinizi korumak için tamamen ayrı bir Chrome profili içinde çalışır.
+4. **Allowlist & Denylist:** Ajanın hangi URL'lere erişebileceği Antigravity IDE'nin User Settings > Browser bölümünden (İzin Verilenler/Engellenenler listesi) yönetilir.
+
+## Kurulum ve Tetikleme
+- **Otomatik Tetikleme:** IDE Playground'da web tarayıcısı gerektiren bir istek yapıldığında (ör: "Help me test this web app") ajan yetki ister.
+- **Kurulum:** Chat panelindeki mavi "Setup" butonuna tıklandığında Chrome Web Store'a yönlendirilir ve "Add to Chrome" ile kurulur.
+- **Manuel Çağrı (Slash Command):** Ajanı tarayıcıyı okuması veya gezinmesi için manuel yönlendirmek isterseniz chat ekranına `/browser` komutu yazarak kullanabilirsiniz.
 
 ## Kullanım Amacı (Birkan İçin)
-- Web uygulamalarının QA (Kalite Güvence) testlerinin otomatikleştirilmesi.
-- Karmaşık web formlarının doldurulması, veri kazıma (scraping) ve araştırma görevleri için doğrudan `browser_subagent` aracıyla tam entegrasyon.
-- N8N webhook'ları, Coolify panelleri ve diğer web tabanlı araçların yönetiminde görsel geri bildirim döngüsü oluşturmak.
-
-## Kurulum ve Konfigürasyon
-- **Yükleme:** Chrome Web Mağazası'ndan doğrudan yüklenir.
-- **İzinler:** Ajanın tarayıcıyla iletişim kurabilmesi için eklentiye "debugging session" başlatma izni verilmelidir.
-- **Entegrasyon:** Antigravity IDE içindeki `browser_subagent` komutu, doğrudan bu eklenti üzerinden çalışır.
+- Web projelerinin canlı UI testi ve görsel doğrulanması.
+- `browser_subagent` veya `/browser` slash komutuyla hedef URL'lerin izole ortamda otomatik çalıştırılması.
+- Eklenti sorun yaratırsa User Settings'ten "Browser Tools" kapatılabilir.
