@@ -127,8 +127,8 @@ Entity çekme / veri yapılandırma
 
 Strateji / Menejer (GEÇİCİ — 2026-06-13'ten itibaren)
   ⚠️ Fable (anthropic/claude-fable-5) KAPALI — Anthropic kısıtladı
-  → GEÇİCİ MENEJER = claude-opus-4-7 (Claude CLI, Pro subscription)
-  → claude -p --model claude-opus-4-7 "görev"
+  → GEÇİCİ MENEJER = claude-opus-4-8 (Claude CLI, Pro subscription)
+  → claude -p --model claude-opus-4-8 "görev"
   → Fable açılınca /root/check_menejer.sh bildirir → orijinal menajerimize döneriz
   → Zen (opencode/claude-fable-5) KULLANMA — bakiye tükenir
 
