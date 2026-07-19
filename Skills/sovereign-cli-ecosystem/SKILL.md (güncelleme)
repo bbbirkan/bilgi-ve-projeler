@@ -1,0 +1,5 @@
+
+### OTOMATİK Öğrenim [2026-06-27]
+> Google Colab, CSV yükleme + anında Pandas/Prophet denemesi için friction-sız bir ortam — yeni veri bilimi görevlerini hızlı prototiplemek için ideal.
+>
+> yt-signal veya yeni bir forecast servisini ilk kez geliştirirken önce Colab'da 10 dakikalık bir spike yap, sonra VPS'e taşı; bu 'prototype in Colab, production on VPS' kuralını sovereign-cli-ecosystem skill'ine ekle.

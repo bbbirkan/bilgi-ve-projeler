@@ -1,0 +1,5 @@
+
+### OTOMATİK Öğrenim [2026-06-27]
+> Quantization'da 'bit count' değil 'format' kaliteyi belirler — aynı 8-bit'te FP8 baseline'dan 2x uzak, Q8 ise paralel performans veriyor (LPIPS metriği ile ölçülmüş).
+>
+> Local AI model seçim kuralı olarak 'bit sayısına değil, format/quantization type'a göre karar ver' ilkesini sovereign-cli-ecosystem skill'inin model-secim bölümüne ekle.

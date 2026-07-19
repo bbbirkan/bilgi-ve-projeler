@@ -1,0 +1,5 @@
+
+### OTOMATİK Öğrenim [2026-06-27]
+> Model değerlendirmede 'aşk şiiri' gibi öznel prompt yerine 'kodlama çıktısı' gibi deterministic, görsel olarak doğrulanabilir görev seçmek kalite farkını net ortaya koyuyor (Sumi Nagashi HTML5 canvas efekti).
+>
+> Birkan'ın 'dumb zone' ve 'regression' kurallarıyla birleştir: model benchmark'larımızda öznel yerine her zaman 'üretilen kod çalışıyor mu / test geçiyor mu' gibi deterministik kriter kullan. Bu kuralı sovereign-loop-engineering skill'ine ekle.

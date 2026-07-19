@@ -1,0 +1,4 @@
+interface:
+  display_name: "Telegram to Obsidian Capture"
+  short_description: "Turn Telegram dumps into useful vault notes"
+  default_prompt: "Use $telegram-to-obsidian-capture to turn my Telegram notes and links into Obsidian-ready notes."

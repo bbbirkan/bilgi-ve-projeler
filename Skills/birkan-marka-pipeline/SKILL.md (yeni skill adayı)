@@ -1,0 +1,5 @@
+
+### OTOMATİK Öğrenim [2026-06-27]
+> Telegram üzerinden sıfırdan marka kurma (isim→logo→paket tasarımı→tanıtım videosu) ajan orkestrasyonunun 'çok adımlı yaratıcı pipeline' örneği; Hermes Agent ile benzer Hoodie iş akışı da gösterildi.
+>
+> Hermes için 'marka-kurulum-pipeline' template'i yaz: adım sırası (isim → logo → mockup → video) + her adımda kullanılacak Higgsfield tool/prompt + Telegram onay noktaları; bu template'i birkan-marka-pipeline-skill olarak skill klasörüne ekle.

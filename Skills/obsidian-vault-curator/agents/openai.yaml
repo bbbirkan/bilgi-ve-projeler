@@ -1,0 +1,4 @@
+interface:
+  display_name: "Obsidian Vault Curator"
+  short_description: "Organize captured notes into an Obsidian vault"
+  default_prompt: "Use $obsidian-vault-curator to organize my captured notes into a clean Obsidian vault."

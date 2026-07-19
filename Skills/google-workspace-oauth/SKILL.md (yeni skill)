@@ -1,0 +1,5 @@
+
+### OTOMATİK Öğrenim [2026-06-27]
+> Google OAuth2 desktop client akışı: console.cloud.google.com → project → enable API → OAuth consent screen (external, test users) → desktop app client → credentials.json indir.
+>
+> Bu OAuth setup adımlarını bir skill olarak kaydet — YouTube, Drive, Sheets API'lerini de eklemeyi planlıyorsak aynı pattern'i tekrar tekrar kullanacağız (Google Workspace otomasyon skill'i).

@@ -1,0 +1,5 @@
+
+### OTOMATİK Öğrenim [2026-06-27]
+> argparse ile input/output path gibi konumsal argümanlar type=path olarak tanımlanıp parser.parse_args() ile Namespace objesine attrs olarak erişilir; bu sayede fonksiyon imzaları temiz kalır.
+>
+> cli-router ve channel-watcher gibi servislerin main giriş noktalarında argparse pattern'ini standartlaştır; script'i başka modülden import edilirse yan etki yaratmasın diye if __name__ == '__main__' guard'ı zorunlu kıl.

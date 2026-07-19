@@ -1,0 +1,4 @@
+interface:
+  display_name: "Obsidian Sync Doctor"
+  short_description: "Diagnose Hermes and Obsidian sync loops"
+  default_prompt: "Use $obsidian-sync-doctor to check whether my Hermes VPS and Obsidian Sync loop is working."

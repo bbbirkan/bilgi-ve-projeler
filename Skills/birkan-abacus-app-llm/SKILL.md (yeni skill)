@@ -1,0 +1,5 @@
+
+### OTOMATİK Öğrenim [2026-06-27]
+> Abacus AI'ın 'App LLM' özelliği tek bir doğal dil prompt ile tam yığın (UI + backend + ödeme + webhook) bir uygulama kurup agent'ın kendini test etmesini sağlıyor — sıfır kod yazarak production-ready site çıkıyor.
+>
+> Abacus App LLM'yi bir skill olarak ekle: kendi küçük ürün/hizmet satış sayfamızı (örn. bir dijital indirme, danışmanlık paketi) agent'a kurdurarak hızlı MVP çıkarmayı dene. Maliyet karşılaştırması yap.

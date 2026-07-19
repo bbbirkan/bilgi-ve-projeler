@@ -1,0 +1,5 @@
+
+### OTOMATİK Öğrenim [2026-06-27]
+> Tek satır CSS kuralı (resize: vertical), kazara yapılan UI manipülasyonlarını engelleyerek tasarım bütünlüğünü korur — defensive UI tasarımı prensibi.
+>
+> Birkan-ui-defensive-css skill'i oluştur: form/input güvenlik kalıpları (resize, user-select, pointer-events, overflow kontrolleri) tek referansta topla.
