@@ -4,7 +4,7 @@ description: "Birkan Kalyon'un Contabo VDS sunucusundaki AI otomasyon ekosistemi
 ---
 
 # SISTEM BAĞLAM DOSYASI
-> Son güncelleme: 2026-07-18
+> Son güncelleme: 2026-07-24
 > **Detaylar için:** `cat /root/CLAUDE_MAX.md`
 
 > **YAPILACAKLAR:** `/root/YAPILACAKLAR.md`
@@ -34,7 +34,12 @@ description: "Birkan Kalyon'un Contabo VDS sunucusundaki AI otomasyon ekosistemi
 | `kolektif mod` | Orkestra `--mode kolektif` → sıralı zincir, safe_abort var |
 | `akıllı mod` | Orkestra `--mode akilli` → otomatik seviye seçimi |
 | `tartışma modu` | Orkestra `--mode tartisma` → 5 danışman kurul (Karşı Çıkan/Sorgulayan/Büyük Resim/Yabancı/Uygulayıcı) → anonim değerlendirme → Başkan kararı |
+| `Menejerler karar versin` | Orkestra `--mode karar` → Menejer Konseyi: Ortak(Claude)+Ay(Kimi K3)+Mentor Sol+Mentor Fable+Vekil(GLM) danışır → Menejer Kaya (opus-4-8) nihai KARAR verir. Yüksek riskli/karmaşık kararlarda kullan |
+| `çılgın modu` | Orkestra `--mode cilgin` → 5 modele 5 farklı bilişsel çerçeve (donanım mühendisi, tersine çevirme, karınca kolonisi vb.) → izole paralel diverge → eleştirmen geçişi (novelty/viability/fit + tuzak tespiti + ★ pick). Mimari/isim/strateji gibi açık uçlu kararlarda kullan, "quick" işlerde kullanma (2026-07-23, ref: github.com/UditAkhourii/adhd) |
+| `Mentor Girdabına at` / `Girdap moduna al` | Orkestra `--mode girdap` (veya `run_mode.sh girdap "..."`) → 3 en derin model (Mentor Sol + Şahin Grok + Mentor Fable) kelime sınırı olmadan, max efor/süre ile paralel derin analiz → Ortak harmanlar. Mimari denetim, post-mortem, tek-soruluk derin analiz için — RADAR gibi hot-path işlere sokma (2026-07-23, isim ÇILGIN ile bulundu) |
 | `orkestra modları` | `python3 /root/2026-orchester/terminal_orchester.py --list-modes` |
+
+> **Not (2026-07-23):** Orkestra modları (koro/kolektif/tartışma/karar/çılgın/girdap/seferberlik) sabit bir tetik kelimesi beklemek zorunda değil — istediğin modu, lazım olduğunda kendin de devreye alabilirsin (`run_mode.sh <mod> "görev"` veya `--mode <mod>`). Detay ve "manifestomuza ulaşmak için bu modlardan nasıl yararlanılır" notu: `CLAUDE_MAX.md`.
 
 ---
 
@@ -142,6 +147,36 @@ DOĞRU:  FTS5 ID'leri al → lessons WHERE id IN (...) → Python'da sırala →
 ```
 Neden: 2026-07-11'de RSI sorgusu 20s sürdü, event loop block yaptı, 502 verdi.
 
+### 4b. OPENCODE CLI HANG KURALI (KRİTİK)
+`opencode run` bir tool-call (dosya okuma vb.) tetiklerse bazen `finish_reason=stop` algılanamıyor, sessizce sonsuz döngüye girip CPU yakıyor, hiç çıktı vermiyor (GitHub #17516, #26220).
+```
+1. Manuel terminalde çıplak `opencode run` ASLA çalıştırma → `timeout 180 opencode run -m ... "prompt"`
+2. Kimi/OpenCode-Go modeline dosya OKUTMA — içeriği prompt'a yapıştır, tool-call tetikleme
+3. Tool-call gereken görevde en yeni Kimi (kimi-k3) yerine GLM-5.2 (Vekil) tercih et
+4. Script yazarken opencode çağrısı HER ZAMAN wait_for/timeout ile sarılı olsun
+5. (2026-07-24, Birkan talimatı) KOD/DOSYA YAZDIRMA görevlerinde `opencode run` CLI'yi
+   VARSAYILAN OLARAK KULLANMA. Onun yerine OpenCode Go'nun düz REST API'sini çağır —
+   `terminal_orchester.py`'deki `ask_glm()` ile AYNI endpoint:
+   `https://opencode.ai/zen/go/v1/chat/completions`, model `glm-5.2`,
+   key `OPENCODE_GO_API_KEY` (Bearer). API'den dönen kodu Ortak kendi
+   Write/Edit/Bash aracıyla dosyaya yazsın, syntax/py_compile ile doğrulasın,
+   testi kendi çalıştırsın — CLI'nin kendi agentic loop'una (kendi başına dosya
+   okuma/yazma/bash çalıştırma) GÜVENME. `opencode run` CLI'yi SADECE gerçekten
+   agentic keşif (öngörülemez, çok dosyalı bir yapıyı kendi başına gezmesi ZORUNLU
+   olan) nadir durumlarda, item 1-4'teki önlemlerle kullan.
+```
+Neden: 2026-07-22'de test edildi — "hello" anında cevap verdi, ama dosya okutma isteyen prompt 53+ dakika CPU yaktı, sıfır çıktı. Detay: `sovereign-brain/techniques/opencode-tool-call-hang.md`
+Neden (madde 5, 2026-07-24): Bu aynı ders zaten 2026-07-23'te terminal_orchester.py'nin
+kendi `ask_glm`/`ask_opencode` fonksiyonları için öğrenilip REST'e çevrilerek çözülmüştü
+(bkz. `terminal_orchester.py` `ask_glm()` docstring: "aynı gün Vekil'e verilen 2 CLI görevi
+hang bugına takılıp 19 dakika boşa yandı") — ama CLAUDE.md'ye yazılmadığı için 2026-07-24'te
+tekrarlandı: ders-madencisi pipeline'ı için `opencode run` CLI'ye delege edilen 3 build
+görevinden biri key1 ile 47 dakika %0 CPU'da sessizce takıldı, biri `/etc/cron.d` +
+`/proc/sys/fs` sandbox izin duvarına çarpıp hiçbir dosya yazmadan "tamamlandı" raporu
+verdi (silent fail), üstelik CLI'nin kendi ürettiği kod da 500 satırlık dersi CLI argv'sine
+sıkıştırıp Linux'un MAX_ARG_STRLEN limitini aşıp "Argument list too long" hatası verdi —
+toplam ~1 saat gecikme, hepsi REST API + Ortak'ın kendi dosya yazması ile önlenebilirdi.
+
 ### 4b. YİKICI İŞLEM KURALI (KRİTİK)
 `rm`, `truncate`, checkpoint sil, veri sıfırla → önce içeriği gör, değeri anla, Birkan'a söyle.
 ```
@@ -167,6 +202,21 @@ Worker'lar (Vekil/Ay/Mini/Güneş) asla:
 - Sonuç uyduramaz — şüpheli görünce Birkan'a sor
 Kaynak: OpenAI GPT 5.6 system card bu 3 davranışı bizzat belgelemiş (Temmuz 2026).
 
+### 4b. SİSTEM KILAVUZU GÜNCELLEME KURALI (KRİTİK)
+Sovereign Ekosistem her büyük güncellemede (yeni servis, yeni otomasyon, güvenlik değişikliği,
+mimari karar) `/root/SISTEM_KILAVUZU.md`'yi de otomatik güncellemek zorundadır — kılavuz eskiyip
+gerçek sistemden kopmasın.
+```
+1. Değişiklik yapıldığında ilgili BÖLÜM'ü SISTEM_KILAVUZU.md'de bul, güncelle
+2. Bu zor/net değilse (küçük iterasyon, henüz olgunlaşmamış iş) ERTELE ama:
+   → herhangi bir repo'yu GitHub'a push etmeden ÖNCE SISTEM_KILAVUZU.md güncellemesi
+     zorunlu son kontrol adımıdır — önce kılavuzu güncelle, sonra push at
+3. Sürüm numarasını (üstteki "Sürüm: X") ve "Son güncelleme" tarihini de güncelle
+```
+Neden: Kılavuz "yaşayan belge" ilan edilmişti ama pratikte günler/haftalar geride kalabiliyordu
+(ör. RADAR'ın Danışma katmanı, crontab saat farkı, çakışan bölüm numaraları hiç yakalanmamıştı) —
+Birkan 2026-07-19'da bunu fark edip kural istedi.
+
 ### 4c. YAPILACAKLAR SİLME + TRELLO SYNC
 Birkan "X yaptım" derse:
 1. YAPILACAKLAR.md'de ara → `[x] ✅` olarak işaretle (silme, işaretle)
@@ -182,6 +232,7 @@ Otomatik timer: her 30 dk `trello-sync.timer` çalışır, manuel de tetiklenebi
 | Teknik yöntem | `sovereign-brain/techniques/` |
 | Karar | `sovereign-brain/decisions/` |
 | Entity | `sovereign-brain/entities/` |
+| Bilgelik/kişisel gelişim/düşünme disiplini | `sovereign-brain/bilgelik/` — Birkan'ı yönlendirmek için kullan |
 | Vizyon fikri | `sovereign-brain/GELECEK.md` |
 | Trading | `/root/trading-system/STRATEJI.md` SADECE |
 
